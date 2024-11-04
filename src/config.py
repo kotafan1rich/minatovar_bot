@@ -1,0 +1,10 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_DB = os.getenv("REDIS_DB")
