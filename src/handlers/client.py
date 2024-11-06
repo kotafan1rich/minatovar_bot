@@ -57,7 +57,7 @@ async def send_shoes_price(message: types.Message, state: FSMContext):
 	price = int(message.text)
 	delivery_price = int(redis_client.get('shoes_price').decode())
 	current_rate = float(redis_client.get('current_rate').decode())
-	result_price = price * current_rate + delivery_price
+	result_price = round(price * current_rate + delivery_price, 2)
 
 	text = send_price_mes(result_price)
 	await bot.send_message(message.from_user.id, text, reply_markup=kb_client_main)
@@ -68,7 +68,7 @@ async def send_cloth_price(message: types.Message, state: FSMContext):
 	price = int(message.text)
 	delivery_price = int(redis_client.get('cloth_price').decode())
 	current_rate = float(redis_client.get('current_rate').decode())
-	result_price = price * current_rate + delivery_price
+	result_price = round(price * current_rate + delivery_price, 2)
 
 	text = send_price_mes(result_price)
 	await bot.send_message(message.from_user.id, text, reply_markup=kb_client_main)
