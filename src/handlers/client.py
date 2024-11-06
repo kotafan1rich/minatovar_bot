@@ -45,11 +45,11 @@ async def set_price_state(message: types.Message, state: FSMContext):
 	if message.text == get_shoes_price_b.text:
 		media = types.FSInputFile("static/media/shoese_price.jpg")
 		await state.set_state(FSMGetPrice.shoes_state)
-		await bot.send_photo(message.from_user.id, photo=media, caption=SEND_PRICE, reply_markup=kb_client_cancel)
 	else:
 		media = types.FSInputFile("static/media/cloth_price.jpg")
 		await state.set_state(FSMGetPrice.cloth_state)
-		await bot.send_photo(message.from_user.id, photo=media, caption=SEND_PRICE, reply_markup=kb_client_cancel)
+
+	await bot.send_photo(message.from_user.id, photo=media, caption=SEND_PRICE, reply_markup=kb_client_cancel)
 
 
 async def send_shoes_price(message: types.Message, state: FSMContext):
