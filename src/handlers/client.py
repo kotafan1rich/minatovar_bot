@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 from create_bot import redis_client
-from .messgaes import SEND_PRICE, START, HELP, TYPE_ITEM, send_current_rate_mes, send_price_mes
+from .messages import SEND_PRICE, START, HELP, TYPE_ITEM, send_current_rate_mes, send_price_mes
 
 from create_bot import bot
 
@@ -43,7 +43,7 @@ async def get_type(message: types.Message, state: FSMContext):
 
 async def set_price_state(message: types.Message, state: FSMContext):
 	if message.text == get_shoes_price_b.text:
-		media = types.FSInputFile("static/media/shoese_price.jpg")
+		media = types.FSInputFile("static/media/shoes_price.jpg")
 		await state.set_state(FSMGetPrice.shoes_state)
 	else:
 		media = types.FSInputFile("static/media/cloth_price.jpg")

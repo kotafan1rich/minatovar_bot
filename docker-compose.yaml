@@ -14,12 +14,10 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./redisdata:/data
+      - redis_data:/data
     expose:
       - 6379
-    
-    environment:
-      - REDIS_REPLICATION_MODE=master
+    command: ["redis-server", "--appendonly", "yes", "--save", "3600 1"]
 
 volumes:
-    redis_data:
+  redis_data:
