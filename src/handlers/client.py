@@ -2,7 +2,7 @@ from aiogram import Dispatcher, F, types
 from aiogram.filters import Command
 
 from keyboards import cancel_b, get_price_b, get_shoes_price_b, kb_client_main, kb_client_get_price, kb_client_cancel, \
-	help_b, get_current_rate_b
+	help_b, get_current_rate_b, get_cloth_price_b
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
@@ -85,6 +85,6 @@ def register_handlers_client(dp: Dispatcher):
 	dp.message.register(cancel_handler, F.text == cancel_b.text)
 	dp.message.register(get_type, F.text == get_price_b.text)
 	dp.message.register(get_current_rate, F.text == get_current_rate_b.text)
-	dp.message.register(set_price_state, FSMGetPrice.get_type_state)
+	dp.message.register(set_price_state, FSMGetPrice.get_type_state, F.text.in_((get_shoes_price_b.text, get_cloth_price_b.text)))
 	dp.message.register(send_shoes_price, FSMGetPrice.shoes_state)
 	dp.message.register(send_cloth_price, FSMGetPrice.cloth_state)
