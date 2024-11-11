@@ -1,8 +1,7 @@
 from aiogram import Dispatcher, F, types
 from aiogram.filters import Command
 
-from keyboards import cancel_b, get_price_b, get_shoes_price_b, kb_client_main, kb_client_get_price, kb_client_cancel, \
-	help_b, get_current_rate_b, get_cloth_price_b
+from keyboards import cancel_b, get_price_b, get_shoes_price_b, kb_client_main, kb_client_get_price, help_b, get_current_rate_b, get_cloth_price_b
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
@@ -42,14 +41,19 @@ async def get_type(message: types.Message, state: FSMContext):
 
 
 async def set_price_state(message: types.Message, state: FSMContext):
-	if message.text == get_shoes_price_b.text:
-		media = types.FSInputFile("static/media/shoes_price.jpg")
-		await state.set_state(FSMGetPrice.shoes_state)
-	else:
-		media = types.FSInputFile("static/media/cloth_price.jpg")
-		await state.set_state(FSMGetPrice.cloth_state)
-
-	await bot.send_photo(message.from_user.id, photo=media, caption=SEND_PRICE, reply_markup=kb_client_cancel)
+    if message.text == get_shoes_price_b.text:
+        media_group = [
+            types.InputMediaPhoto(media=types.FSInputFile("static/media/shoes_price_2.jpg")),
+            types.InputMediaPhoto(media=types.FSInputFile("static/media/shoes_price.jpg"), caption=SEND_PRICE)
+        ]
+        await state.set_state(FSMGetPrice.shoes_state)
+    else:
+        media_group = [
+            types.InputMediaPhoto(media=types.FSInputFile("static/media/cloth_price_2.jpg")),
+            types.InputMediaPhoto(media=types.FSInputFile("static/media/cloth_price.jpg"), caption=SEND_PRICE)
+        ]
+        await state.set_state(FSMGetPrice.cloth_state)
+    await bot.send_media_group(message.from_user.id, media=media_group)
 
 
 async def send_shoes_price(message: types.Message, state: FSMContext):
