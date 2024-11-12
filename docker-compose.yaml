@@ -24,7 +24,6 @@ services:
     command: >
       sh -c '
         mkdir -p /usr/local/etc/redis &&
-        echo "replicaof redis 6379" >> /usr/local/etc/redis/redis.conf &&
         echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
         echo "requirepass 2007Fj2007" >> /usr/local/etc/redis/redis.conf &&
         echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
