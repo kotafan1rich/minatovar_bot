@@ -31,12 +31,9 @@ services:
         echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
         echo "user minatovar on >2007Fj2007 ~* +@all" >> /usr/local/etc/redis/users.acl &&
         echo "save 900 1" >> /usr/local/etc/redis/redis.conf &&
-<<<<<<< HEAD
-=======
+
         echo "auto-aof-rewrite-min-size 64mb" >> /usr/local/etc/redis/redis.conf &&
->>>>>>> 30accf88c2b922458a3609f3e45182ba5123b235
-        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
-        
+        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl  
       '
 
 volumes:
