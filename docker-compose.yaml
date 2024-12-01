@@ -14,7 +14,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/redis_data
+      - ./redis_data:/data
     expose:
       - 6379
     environment:
