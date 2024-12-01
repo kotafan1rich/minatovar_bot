@@ -14,7 +14,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      - redis_data:/redis_data
     expose:
       - 6379
     environment:
@@ -31,7 +31,6 @@ services:
         echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
         echo "user minatovar on >2007Fj2007 ~* +@all" >> /usr/local/etc/redis/users.acl &&
         echo "save 900 1" >> /usr/local/etc/redis/redis.conf &&
-
         echo "auto-aof-rewrite-min-size 64mb" >> /usr/local/etc/redis/redis.conf &&
         redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl  
       '
