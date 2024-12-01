@@ -162,4 +162,4 @@ cython_debug/
 .idea/
 .vscode/
 reddis_data/
-.ruff_cache
+.ruff_cache/

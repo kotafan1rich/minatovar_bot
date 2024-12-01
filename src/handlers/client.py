@@ -1,5 +1,6 @@
 from aiogram import Dispatcher, F, types
 from aiogram.filters import Command
+from db.dals import RedisDAL
 
 from keyboards import (
     cancel_b,
@@ -15,12 +16,12 @@ from keyboards import (
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
-from create_bot import redis_client
 from .messages import (
     SEND_PRICE,
     START,
     HELP,
     TYPE_ITEM,
+    BOT_IS_UNVAILABLE,
     send_current_rate_mes,
     send_price_mes,
 )
@@ -89,32 +90,46 @@ async def set_price_state(message: types.Message, state: FSMContext):
 async def send_shoes_price(message: types.Message, state: FSMContext):
     await state.clear()
     price = int(message.text)
-    delivery_price = int(redis_client.get("shoes_price").decode())
-    current_rate = float(redis_client.get("current_rate").decode())
-    result_price = round(price * current_rate + delivery_price, 2)
+    delivery_price = RedisDAL().get_shoes_price()
+    current_rate = RedisDAL().get_current_rate()
+    if delivery_price and current_rate:
+        result_price = round(price * current_rate + delivery_price, 2)
 
-    text = send_price_mes(result_price)
-    await bot.send_message(message.from_user.id, text, reply_markup=kb_client_main)
+        text = send_price_mes(result_price)
+        await bot.send_message(message.from_user.id, text, reply_markup=kb_client_main)
+    else:
+        await bot.send_message(
+            message.from_user.id, BOT_IS_UNVAILABLE, reply_markup=kb_client_main
+        )
 
 
 async def send_cloth_price(message: types.Message, state: FSMContext):
     await state.clear()
     price = int(message.text)
-    delivery_price = int(redis_client.get("cloth_price").decode())
-    current_rate = float(redis_client.get("current_rate").decode())
-    result_price = round(price * current_rate + delivery_price, 2)
+    delivery_price = RedisDAL().get_cloth_price()
+    current_rate = RedisDAL().get_current_rate()
+    if delivery_price and current_rate:
+        result_price = round(price * current_rate + delivery_price, 2)
 
-    text = send_price_mes(result_price)
-    await bot.send_message(message.from_user.id, text, reply_markup=kb_client_main)
+        text = send_price_mes(result_price)
+        await bot.send_message(message.from_user.id, text, reply_markup=kb_client_main)
+    else:
+        await bot.send_message(
+            message.from_user.id, BOT_IS_UNVAILABLE, reply_markup=kb_client_main
+        )
 
 
 async def get_current_rate(message: types.Message):
-    current_rate = str(float(redis_client.get("current_rate").decode()))
-    await bot.send_message(
-        message.from_user.id,
-        send_current_rate_mes(current_rate),
-        reply_markup=kb_client_main,
-    )
+    if current_rate := RedisDAL().get_current_rate():
+        await bot.send_message(
+            message.from_user.id,
+            send_current_rate_mes(current_rate),
+            reply_markup=kb_client_main,
+        )
+    else:
+        await bot.send_message(
+            message.from_user.id, BOT_IS_UNVAILABLE, reply_markup=kb_client_main
+        )
 
 
 def register_handlers_client(dp: Dispatcher):
