@@ -27,7 +27,6 @@ services:
         echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
         echo "requirepass 2007Fj2007" >> /usr/local/etc/redis/redis.conf &&
         echo appendfilename "appendonly.aof" >> /usr/local/etc/redis/redis.conf &&
-        echo "dir /data" >> /usr/local/etc/redis/redis.conf &&
         echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
         echo "appendfsync always" >> /usr/local/etc/redis/redis.conf &&
         echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
