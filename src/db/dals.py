@@ -21,7 +21,7 @@ class RedisDAL:
     def set_cloth_price(self, price: int):
         redis_client.set("cloth_price", price)
         return price
-    
+
     def set_current_rate(self, rate: float):
         redis_client.set("current_rate", rate)
         return rate

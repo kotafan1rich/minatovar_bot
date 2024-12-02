@@ -26,11 +26,13 @@ services:
         mkdir -p /usr/local/etc/redis &&
         echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
         echo "requirepass 2007Fj2007" >> /usr/local/etc/redis/redis.conf &&
+        echo appendfilename "appendonly.aof" >> /usr/local/etc/redis/redis.conf &&
+        echo "dir /data" >> /usr/local/etc/redis/redis.conf &&
         echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
-        echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
+        echo "appendfsync always" >> /usr/local/etc/redis/redis.conf &&
         echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
         echo "user minatovar on >2007Fj2007 ~* +@all" >> /usr/local/etc/redis/users.acl &&
-        echo "save 900 1" >> /usr/local/etc/redis/redis.conf &&
+        echo "save 100 1" >> /usr/local/etc/redis/redis.conf &&
         echo "auto-aof-rewrite-min-size 64mb" >> /usr/local/etc/redis/redis.conf &&
         redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl  
       '

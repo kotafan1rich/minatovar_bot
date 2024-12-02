@@ -1,7 +1,3 @@
-BOT_IMAGE_NAME = my_bot
-
-BOT_PORT = 8000
-
 BOT_DIR = ./src
 DOCKER_COMPOSE_FILE = ./docker-compose.yaml
 
