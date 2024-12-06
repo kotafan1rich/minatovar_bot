@@ -121,3 +121,5 @@ cython_debug/
 .vscode/
 .ruff_cache/
 redis_data/
+ruff.toml
+data/data.json

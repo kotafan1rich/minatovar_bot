@@ -3,6 +3,8 @@ services:
     container_name: bot
     build: ./src
     restart: always
+    volumes:
+      - ./data:/data
     depends_on:
       - redis
     env_file:
@@ -35,6 +37,12 @@ services:
         echo "auto-aof-rewrite-min-size 64mb" >> /usr/local/etc/redis/redis.conf &&
         redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl  
       '
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "2007Fj2007", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
 volumes:
   redis_data:

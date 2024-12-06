@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, F, types
 from aiogram.filters import Command
-from db.dals import RedisDAL
+from db.dals import DataDAL
 
 from keyboards import (
     cancel_b,
@@ -90,8 +90,8 @@ async def set_price_state(message: types.Message, state: FSMContext):
 async def send_shoes_price(message: types.Message, state: FSMContext):
     await state.clear()
     price = int(message.text)
-    delivery_price = RedisDAL().get_shoes_price()
-    current_rate = RedisDAL().get_current_rate()
+    delivery_price = await DataDAL().get_shoes_price()
+    current_rate = await DataDAL().get_current_rate()
     if delivery_price and current_rate:
         result_price = round(price * current_rate + delivery_price, 2)
 
@@ -106,8 +106,8 @@ async def send_shoes_price(message: types.Message, state: FSMContext):
 async def send_cloth_price(message: types.Message, state: FSMContext):
     await state.clear()
     price = int(message.text)
-    delivery_price = RedisDAL().get_cloth_price()
-    current_rate = RedisDAL().get_current_rate()
+    delivery_price = await DataDAL().get_cloth_price()
+    current_rate = await DataDAL().get_current_rate()
     if delivery_price and current_rate:
         result_price = round(price * current_rate + delivery_price, 2)
 
@@ -120,7 +120,7 @@ async def send_cloth_price(message: types.Message, state: FSMContext):
 
 
 async def get_current_rate(message: types.Message):
-    if current_rate := RedisDAL().get_current_rate():
+    if current_rate := await DataDAL().get_current_rate():
         await bot.send_message(
             message.from_user.id,
             send_current_rate_mes(current_rate),

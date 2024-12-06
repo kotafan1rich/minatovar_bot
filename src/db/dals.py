@@ -1,27 +1,53 @@
-from .connection import redis_client
+import asyncio
+import json
+import aiofiles
 
 
-class RedisDAL:
-    def get_shoes_price(self):
-        if delivery_price := redis_client.get("shoes_price"):
-            return int(delivery_price.decode())
+from config import DATA_FILE
 
-    def get_cloth_price(self):
-        if delivery_price := redis_client.get("cloth_price"):
-            return int(delivery_price.decode())
+file_lock = asyncio.Lock()
 
-    def get_current_rate(self):
-        if current_rate := redis_client.get("current_rate"):
-            return float(current_rate.decode())
 
-    def set_shoes_price(self, price: int):
-        redis_client.set("shoes_price", price)
+class DataDAL:
+    async def load_data(self) -> dict:
+        async with aiofiles.open(DATA_FILE, mode="r") as f:
+            data = await f.read()
+            return json.loads(data) if data.strip() else {}
+
+    async def save_data(self, data: dict):
+        async with file_lock:
+            async with aiofiles.open(DATA_FILE, mode="w") as f:
+                await f.write(json.dumps(data, indent=4, ensure_ascii=False))
+
+    async def get_shoes_price(self):
+        delivery_price = await self.load_data()
+        if delivery_price := delivery_price.get("shoes_price"):
+            return int(delivery_price)
+
+    async def get_cloth_price(self):
+        delivery_price = await self.load_data()
+        if delivery_price := delivery_price.get("cloth_price"):
+            return int(delivery_price)
+
+    async def get_current_rate(self):
+        current_rate = await self.load_data()
+        if current_rate := current_rate.get("current_rate"):
+            return float(current_rate)
+
+    async def set_shoes_price(self, price: int):
+        data = await self.load_data()
+        data["shoes_price"] = price
+        await self.save_data(data)
         return price
 
-    def set_cloth_price(self, price: int):
-        redis_client.set("cloth_price", price)
+    async def set_cloth_price(self, price: int):
+        data = await self.load_data()
+        data["cloth_price"] = price
+        await self.save_data(data)
         return price
 
-    def set_current_rate(self, rate: float):
-        redis_client.set("current_rate", rate)
+    async def set_current_rate(self, rate: float):
+        data = await self.load_data()
+        data["current_rate"] = rate
+        await self.save_data(data)
         return rate
