@@ -5,17 +5,18 @@ import aiofiles
 
 from config import DATA_FILE
 
-file_lock = asyncio.Lock()
-
 
 class DataDAL:
+    def __init__(self):
+        self.file_lock = asyncio.Lock()
+
     async def load_data(self) -> dict:
         async with aiofiles.open(DATA_FILE, mode="r") as f:
             data = await f.read()
             return json.loads(data) if data.strip() else {}
 
     async def save_data(self, data: dict):
-        async with file_lock:
+        async with self.file_lock:
             async with aiofiles.open(DATA_FILE, mode="w") as f:
                 await f.write(json.dumps(data, indent=4, ensure_ascii=False))
 
