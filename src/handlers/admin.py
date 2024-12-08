@@ -17,7 +17,7 @@ async def change_shoes_price(message: types.Message):
             price = await DataDAL().set_shoes_price(
                 price=int(message.text.split(" ")[1])
             )
-            
+
             await bot.send_message(message.from_user.id, str(price))
         except IndexError:
             await bot.send_message(message.from_user.id, NON_ARGUMENT_ERROR)
