@@ -27,5 +27,3 @@ def send_price_mes(price) -> str:
 
 def send_current_rate_mes(current_rate) -> str:
     return f"1¥ = {current_rate}₽"
-
-print(send_price_mes(1))
