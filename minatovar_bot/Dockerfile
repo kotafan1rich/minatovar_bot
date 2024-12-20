@@ -10,6 +10,5 @@ RUN pip install -r requirements.txt
 
 # Копируем исходный код бота в контейнер
 COPY . .
-
 # Команда для запуска бота
-CMD ["python", "main.py"]
+CMD ["python", "src/main.py"]
