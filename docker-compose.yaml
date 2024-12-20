@@ -1,6 +1,6 @@
 services:
   bot:
-    container_name: bot
+    container_name: minatovar_bot
     build: ./src
     restart: always
     volumes:
