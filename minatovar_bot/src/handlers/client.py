@@ -69,7 +69,8 @@ async def set_price_state(message: types.Message, state: FSMContext):
                 media=types.FSInputFile(f"{STATIC_FILES}/shoes_price_2.jpg")
             ),
             types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price.jpg")
+                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price.jpg"),
+                caption=SEND_PRICE,
             ),
         ]
         await state.set_state(FSMGetPrice.shoes_state)
@@ -79,14 +80,12 @@ async def set_price_state(message: types.Message, state: FSMContext):
                 media=types.FSInputFile(f"{STATIC_FILES}/cloth_price_2.jpg")
             ),
             types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price.jpg")
+                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price.jpg"),
+                caption=SEND_PRICE,
             ),
         ]
         await state.set_state(FSMGetPrice.cloth_state)
     await bot.send_media_group(message.from_user.id, media=media_group)
-    await bot.send_message(
-        message.from_user.id, SEND_PRICE, reply_markup=kb_client_cancel
-    )
 
 
 async def send_shoes_price(message: types.Message, state: FSMContext):
