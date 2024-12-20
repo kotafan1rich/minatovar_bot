@@ -26,6 +26,8 @@ from .messages import (
     send_price_mes,
 )
 
+from config import STATIC_FILES
+
 from create_bot import bot
 
 
@@ -64,20 +66,20 @@ async def set_price_state(message: types.Message, state: FSMContext):
     if message.text == get_shoes_price_b.text:
         media_group = [
             types.InputMediaPhoto(
-                media=types.FSInputFile("static/media/shoes_price_2.jpg")
+                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price_2.jpg")
             ),
             types.InputMediaPhoto(
-                media=types.FSInputFile("static/media/shoes_price.jpg")
+                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price.jpg")
             ),
         ]
         await state.set_state(FSMGetPrice.shoes_state)
     else:
         media_group = [
             types.InputMediaPhoto(
-                media=types.FSInputFile("static/media/cloth_price_2.jpg")
+                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price_2.jpg")
             ),
             types.InputMediaPhoto(
-                media=types.FSInputFile("static/media/cloth_price.jpg")
+                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price.jpg")
             ),
         ]
         await state.set_state(FSMGetPrice.cloth_state)
