@@ -16,13 +16,13 @@ admin.register_handlers_admin(dp)
 
 
 async def on_startapp():
-    defalt_data = {"current_rate": None, "cloth_price": None, "shoes_price": None}
+    default_data = {"current_rate": None, "cloth_price": None, "shoes_price": None}
     if not os.path.exists(DATA_FILE):
-        await DataDAL().save_data(defalt_data)
+        await DataDAL().save_data(default_data)
     else:
         data = await DataDAL().load_data()
         if not data:
-            DataDAL().save_data(defalt_data)
+            DataDAL().save_data(default_data)
 
 
 async def main():
