@@ -1,17 +1,15 @@
 FROM python:3.9
-RUN mkdir /app
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY . .
 
-# Устанавливаем зависимости
-COPY requirements.txt .
+RUN chmod +x /app/docker/bot.sh
 
-# Устанавливаем зависимости
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY . .
 
 RUN chmod a+x docker/*.sh
+CMD [ "/app/docker/bot.sh" ]
