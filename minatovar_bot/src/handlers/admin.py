@@ -23,7 +23,7 @@ from .messages import (
 
 from create_bot import bot
 
-admins = [1019030670, 1324716819, 7838275794]
+admins = [1019030670, 1324716819, 1423930901]
 
 admin_router = Router(name="admin_router")
 
