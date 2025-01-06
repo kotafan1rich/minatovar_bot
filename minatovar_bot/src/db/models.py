@@ -7,7 +7,7 @@ from sqlalchemy import (
     Integer,
     ForeignKey,
     UniqueConstraint,
-    BIGINT
+    BIGINT,
 )
 from sqlalchemy.orm import declarative_base, relationship
 import enum
@@ -35,7 +35,6 @@ class User(Base):
     user_id = Column(BIGINT, unique=True, nullable=False)
     username = Column(String(255), nullable=True)
 
-    # Отношения для рефералов
     referrals_from = relationship(
         "Referral",
         foreign_keys="Referral.id_from",
@@ -95,3 +94,10 @@ class Settings(Base):
     id = Column(Integer, primary_key=True)
     key = Column(String(255), nullable=False)
     value = Column(Float, nullable=False)
+
+
+class Promotions(Base):
+    __tablename__ = "promotions"
+
+    id = Column(Integer, primary_key=True)
+    descriptions = Column(String(255), nullable=False)
