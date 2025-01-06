@@ -76,6 +76,7 @@ def get_order_for_admin(order: Order, username: str):
 Цена (CNY): {order.price_cny}¥
 Адрес: {order.addres}
 Пользователь: @{username}
+Дата создания: {order.time_created.strftime("%d.%m.%Y %H:%M:%S MSK")}
 """
 
 
@@ -88,4 +89,5 @@ def get_order(order: Order):
 Цена (RUB): {order.price_rub}₽
 Цена (CNY): {order.price_cny}¥
 Адрес: {order.addres}
+Дата создания: {order.time_created.strftime("%d.%m.%Y MSK")}
 """

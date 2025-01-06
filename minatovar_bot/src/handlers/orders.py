@@ -110,9 +110,10 @@ async def get_type_item(call: types.CallbackQuery, calback_arg: str, state: FSMC
     await state.update_data(type_item=calback_arg)
     await state.set_state(FSMOrder.addres)
     await call.answer()
-    await bot.send_message(
-        call.from_user.id,
-        SEND_ADDRES,
+    await bot.edit_message_text(
+        chat_id=call.from_user.id,
+        message_id=call.message.message_id,
+        text=SEND_ADDRES,
         reply_markup=OrderKeyboards.back_to_orders_inline(),
     )
 

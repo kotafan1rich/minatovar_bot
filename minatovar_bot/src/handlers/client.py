@@ -82,6 +82,9 @@ async def get_type(call: types.CallbackQuery, state: FSMContext):
 async def set_price_state(
     call: types.CallbackQuery, state: FSMContext, calback_arg: str
 ):
+    await bot.delete_message(
+        chat_id=call.from_user.id, message_id=call.message.message_id
+    )
     if calback_arg == OrderTypeItem.SHOES.value:
         media_group = [
             types.InputMediaPhoto(
