@@ -3,7 +3,7 @@ from typing import Union
 from sqlalchemy import delete, exists, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models import Order, OrderStatus, Referral, Settings, User
+from db.models import Order, OrderStatus, Promotions, Referral, Settings, User
 from cache.redis import build_key, cached
 
 
@@ -137,6 +137,27 @@ class OrderDAL(BaseDAL):
 
     async def delete_order(self, id: int):
         query = delete(Order).where(Order.id == id)
+        await self.db_session.execute(query)
+        await self.db_session.commit()
+        return id
+
+class PromotionsDAL(BaseDAL):
+    async def get_all_promotions(self):
+        query = (
+                select(Promotions)
+                .order_by(Promotions.id)
+            )
+        result = await self.db_session.execute(query)
+        return result.scalars().all()
+
+    async def add_promotion(self, text: str):
+        new_promotion = Promotions(descriptions=text)
+        self.db_session.add(new_promotion)
+        await self.db_session.commit()
+        return new_promotion
+
+    async def delete_promotion(self, id: int):
+        query = delete(Promotions).where(Promotions.id == id)
         await self.db_session.execute(query)
         await self.db_session.commit()
         return id

@@ -1,4 +1,4 @@
-from db.models import Order
+from db.models import Order, Promotions
 
 HELP = "Если у вас есть вопросы по доставке, ценообразованию и качеству товара, то\
 можете написать нашему администратору\n\nАдминистратор: @UglyMJoy"
@@ -21,12 +21,14 @@ NON_ARGUMENT_ERROR = "Не введён аргумент"
 BOT_IS_UNVAILABLE = "Бот в данный момент недоступен. Приносим свои изменения"
 UNCORRECT_URL = "Некорректная ссылка"
 SET_USERNAME = "Установите username и повторите попытку"
+NO_PROMOTIONS = "Нет акций"
 
 
 SEND_COMMAND = "Отпарвьте команду"
 WHAT_CHANGE_QUSTION = "Что хотите поменять?"
 NO_ORDERS = "Нет заказов"
 SEND_NEW_VALUE = "Отправьте новое значение"
+SEND_DESCRIPTION = "Отправьте описание акции"
 
 MAIN_MENU = "Главное меню"
 WHATS_NEXT = "Что дальше?"
@@ -34,6 +36,7 @@ USERS_NO_ORDERS = "У вас нет заказов"
 SEND_URL = "Отпрвьте url товара"
 SEND_ADDRES = "Отправьте адрес"
 SEND_SIZE = "Отправьте размер"
+ADDED = "Добавлено"
 
 
 def send_price_mes(price) -> str:
@@ -91,3 +94,6 @@ def get_order(order: Order):
 Адрес: {order.addres}
 Дата создания: {order.time_created.strftime("%d.%m.%Y MSK")}
 """
+
+def get_promotion(promotion: Promotions):
+    return f"""ID Акции: {promotion.id}\n\n{promotion.descriptions}"""
