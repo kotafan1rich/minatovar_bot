@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# vim: set fileencoding=UTF-8
 import asyncio
 from aiogram.types import BotCommand
 from create_bot import bot, dp
