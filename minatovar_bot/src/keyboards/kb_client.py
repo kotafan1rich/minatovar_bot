@@ -1,23 +1,44 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-
-get_price_b = KeyboardButton(text="Рассчитать стоимость товара")
-help_b = KeyboardButton(text="Помощь")
-get_cloth_price_b = KeyboardButton(text="Одежда")
-get_shoes_price_b = KeyboardButton(text="Обувь")
-get_current_rate_b = KeyboardButton(text="Текущий курс юаня")
-cancel_b = KeyboardButton(text="Отмена")
-
-
-kb_client_main_bottons = [[get_price_b, get_current_rate_b], [help_b]]
-kb_client_get_price_bottons = [[get_shoes_price_b, get_cloth_price_b], [cancel_b]]
-kb_client_cancel_bottons = [[cancel_b]]
-
-kb_client_main = ReplyKeyboardMarkup(
-    keyboard=kb_client_main_bottons, resize_keyboard=True
+from aiogram.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
 )
-kb_client_get_price = ReplyKeyboardMarkup(
-    keyboard=kb_client_get_price_bottons, resize_keyboard=True
-)
-kb_client_cancel = ReplyKeyboardMarkup(
-    keyboard=kb_client_cancel_bottons, resize_keyboard=True
-)
+
+from .common import BaseKeyboards
+
+
+class ClientKeyboards(BaseKeyboards):
+    GET_PRCIE_BOTTON = InlineKeyboardButton(
+        text="Рассчитать стоимость товара", callback_data="getprice"
+    )
+    GET_CURRENT_RATE_BOTTON = InlineKeyboardButton(
+        text="Текущий курс юаня", callback_data="getrate"
+    )
+    ORDER_BOTTON = InlineKeyboardButton(text="Заказы", callback_data="orders")
+    REFERRAL_MENU_BOTTON = InlineKeyboardButton(
+        text="Рефералы", callback_data="referralmenu"
+    )
+    HELP_BOTTON = InlineKeyboardButton(text="Помощь", callback_data="help")
+    MY_REFERRALS_BOTTON = InlineKeyboardButton(
+        text="Мои рефералы", callback_data="myreferrals"
+    )
+    REFERRAL_URL_BOTTON = InlineKeyboardButton(
+        text="Моя ссылка", callback_data="referralurl"
+    )
+
+    @classmethod
+    def main_menu_inline_kb(cls):
+        bottons = [
+            [cls.GET_PRCIE_BOTTON],
+            [cls.GET_CURRENT_RATE_BOTTON],
+            [cls.ORDER_BOTTON, cls.REFERRAL_MENU_BOTTON],
+            [cls.HELP_BOTTON],
+        ]
+        return InlineKeyboardMarkup(inline_keyboard=bottons)
+
+    @classmethod
+    def get_referral_menu_inline(cls):
+        bottons = [
+            [cls.REFERRAL_URL_BOTTON, cls.MY_REFERRALS_BOTTON],
+            [cls.BACK_BOTTON],
+        ]
+        return InlineKeyboardMarkup(inline_keyboard=bottons)
