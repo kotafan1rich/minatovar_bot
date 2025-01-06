@@ -1,15 +1,14 @@
 FROM python:3.9
+RUN mkdir /app
 
 WORKDIR /app
 
-COPY . .
+COPY requirements.txt .
 
-RUN chmod +x /app/docker/bot.sh
-
-RUN pip install --upgrade pip
+# Устанавливаем зависимости
 RUN pip install -r requirements.txt
 
+# Копируем исходный код бота в контейнер
 COPY . .
-
+# Команда для запуска бота
 RUN chmod a+x docker/*.sh
-CMD [ "/app/docker/bot.sh" ]

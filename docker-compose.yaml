@@ -6,6 +6,7 @@ services:
     depends_on:
       - redis
       - postgres
+    command: ["/app/docker/bot.sh"]
     env_file:
       - .env-non-dev
     deploy:
