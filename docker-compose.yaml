@@ -5,6 +5,7 @@ services:
     restart: always
     volumes:
       - ./data:/data
+    command: ["/app/docker/bot.sh"]
     depends_on:
       - redis
     env_file:
