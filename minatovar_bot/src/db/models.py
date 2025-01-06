@@ -1,5 +1,6 @@
 from sqlalchemy import (
     Column,
+    DateTime,
     Enum,
     Float,
     Index,
@@ -8,6 +9,7 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint,
     BIGINT,
+    func,
 )
 from sqlalchemy.orm import declarative_base, relationship
 import enum
@@ -84,6 +86,7 @@ class Order(Base):
     price_cny = Column(Integer, nullable=False, default=0)
     size = Column(Float, nullable=False)
     type_item = Column(Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False)
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="orders")
 
