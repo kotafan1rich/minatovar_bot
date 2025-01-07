@@ -67,7 +67,6 @@ async def get_all_promos(call: types.CallbackQuery, db_session: AsyncSession):
         await bot.send_message(
             call.from_user.id,
             NO_PROMOS,
-            reply_markup=AdminKeyboards.admin_menu_inline(),
         )
 
 
