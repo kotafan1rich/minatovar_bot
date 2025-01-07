@@ -123,3 +123,4 @@ cython_debug/
 redis_data/
 ruff.toml
 data/data.json
+postgres/backups/*.sql

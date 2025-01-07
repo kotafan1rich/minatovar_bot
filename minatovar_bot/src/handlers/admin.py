@@ -9,7 +9,6 @@ from keyboards import AdminKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .messages import (
-    ADDED,
     ADMIN_HELP,
     BAD_FORMAT_ERROR,
     NO_ORDERS,
@@ -22,7 +21,7 @@ from .messages import (
     WHATS_NEXT,
     get_order,
     get_order_for_admin,
-    get_promotion,
+    get_promotions,
 )
 
 admins = [1019030670, 1324716819, 1423930901]
@@ -39,7 +38,7 @@ async def admin(message: types.Message):
     )
 
 
-@admin_router.callback_query(F.data == "promotions")
+@admin_router.callback_query(F.data == "promotionsadmin")
 async def promotions_menu(call: types.CallbackQuery):
     await bot.edit_message_text(
         chat_id=call.from_user.id,
@@ -57,10 +56,8 @@ async def get_all_promotions(call: types.CallbackQuery, db_session: AsyncSession
         for promotion in all_promotions:
             await bot.send_message(
                 chat_id=call.from_user.id,
-                text=get_promotion(promotion),
-                reply_markup=AdminKeyboards.get_info_promotion_inline(
-                    call.from_user.id
-                ),
+                text=get_promotions([promotion]),
+                reply_markup=AdminKeyboards.get_info_promotion_inline(promotion.id),
             )
         await bot.send_message(
             call.from_user.id,
@@ -101,7 +98,7 @@ async def get_description_admin(
 ):
     promotion_dal = PromotionsDAL(db_session)
     new_promotion = await promotion_dal.add_promotion(message.text)
-    await bot.send_message(message.from_user.id, get_promotion(new_promotion))
+    await bot.send_message(message.from_user.id, get_promotions([new_promotion]))
     await state.clear()
 
 
@@ -126,8 +123,6 @@ async def back_to_menu_admin(call: types.CallbackQuery, state: FSMContext):
         text=SEND_COMMAND,
         reply_markup=AdminKeyboards.admin_menu_inline(),
     )
-
-
 
 
 @admin_router.callback_query(

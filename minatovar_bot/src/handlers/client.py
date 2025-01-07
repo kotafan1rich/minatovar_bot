@@ -3,12 +3,14 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from config import STATIC_FILES
 from create_bot import bot
-from db.dals import ReferralDAL, SettingsDAL
+from db.dals import PromotionsDAL, ReferralDAL, SettingsDAL
 from db.models import OrderTypeItem
 from fsms import FSMGetPrice
 from keyboards import ClientKeyboards
 from middlewares.middleware import StartMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from utils.orders import get_active_referrals
 
 from .messages import (
     BOT_IS_UNVAILABLE,
@@ -19,6 +21,7 @@ from .messages import (
     TYPE_ITEM,
     WHATS_NEXT,
     count_referrals,
+    get_promotions,
     refferal_link,
     send_current_rate_mes,
     send_price_mes,
@@ -64,6 +67,18 @@ async def help(call: types.CallbackQuery):
     await call.answer()
     await bot.send_message(
         call.from_user.id, HELP, reply_markup=ClientKeyboards.close_inline()
+    )
+
+
+@client_router.callback_query(F.data == "promotionsclient")
+async def promotions(call: types.CallbackQuery, db_session: AsyncSession):
+    await call.answer()
+    promotions_dal = PromotionsDAL(db_session)
+    all_promotions = await promotions_dal.get_all_promotions()
+    await bot.send_message(
+        chat_id=call.from_user.id,
+        text=get_promotions(all_promotions),
+        reply_markup=ClientKeyboards.close_inline(),
     )
 
 
@@ -192,11 +207,16 @@ async def get_refferal_link(call: types.CallbackQuery):
 
 @client_router.callback_query(F.data == "myreferrals")
 async def get_my_referrals(call: types.CallbackQuery, db_session: AsyncSession):
+    user_id = call.from_user.id
     referral_dal = ReferralDAL(db_session)
+
     referrals = await referral_dal.get_refferals(int(call.from_user.id))
+    actives = await get_active_referrals(
+        user_id=user_id, user_referrals=referrals, db_session=db_session
+    )
     await bot.edit_message_text(
-        chat_id=call.from_user.id,
+        chat_id=user_id,
         message_id=call.message.message_id,
-        text=count_referrals(referrals),
+        text=count_referrals(referrals, actives),
         reply_markup=ClientKeyboards.close_inline(),
     )

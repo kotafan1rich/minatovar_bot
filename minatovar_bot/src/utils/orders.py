@@ -9,12 +9,22 @@ def is_valid_link(link: str) -> bool:
     return bool(re.match(pattern, link))
 
 
+async def get_active_referrals(user_id: int, user_referrals, db_session) -> int:
+    order_dal = OrderDAL(db_session)
+    k = 0
+    for id_ref in user_referrals:
+        summ = sum(await order_dal.get_completed_orders_for_user(user_id=id_ref))
+        if summ >= 4000:
+            k += 1
+    return k
+
+
 async def calculate_rub_price(
     user_id: int, price_cny: int, type_item: OrderTypeItem, db_session
 ):
-    referral_dal = ReferralDAL(db_session)
-    order_dal = OrderDAL(db_session)
     settings_dal = SettingsDAL(db_session)
+    referral_dal = ReferralDAL(db_session)
+
     current_rate: float = await settings_dal.get_param("current_rate")
     deliver_price = (
         await settings_dal.get_param("shoes_price")
@@ -22,20 +32,19 @@ async def calculate_rub_price(
         else await settings_dal.get_param("cloth_price")
     )
     user_referrals: list = await referral_dal.get_refferals(id_from=user_id)
-    k = 0
-    for id_ref in user_referrals:
-        summ = sum(await order_dal.get_completed_orders_for_user(user_id=id_ref))
-        if summ >= 4000:
-            k += 1
+    active_referrals = await get_active_referrals(user_id, user_referrals, db_session)
+
     price_rub = price_cny * current_rate + deliver_price
-    if k:
+    if active_referrals:
         if price_rub < 10000:
-            k = min(k, 5)
-            price_rub *= (1 - k * 0.1)
+            active_referrals = min(active_referrals, 5)
+            price_rub *= 1 - active_referrals * 0.1
+
         elif price_rub < 20000:
-            k = min(k, 3)
-            price_rub *= (1 - k * 0.1)
+            active_referrals = min(active_referrals, 3)
+            price_rub *= 1 - active_referrals * 0.1
+
         else:
-            k = min(k, 4)
-            price_rub *= 1 - k * 0.05
+            active_referrals = min(active_referrals, 4)
+            price_rub *= 1 - active_referrals * 0.05
     return round(price_rub)

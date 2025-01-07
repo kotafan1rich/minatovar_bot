@@ -14,7 +14,9 @@ class AdminKeyboards(BaseKeyboards):
     ALL_COMPLETED_ORDERS_BOTTON = InlineKeyboardButton(
         text="Завершенные заказы", callback_data="admin_completed"
     )
-    PROMOTIONS_BOTTON = InlineKeyboardButton(text="Акции", callback_data="promotions")
+    PROMOTIONS_BOTTON = InlineKeyboardButton(
+        text="Акции", callback_data="promotionsadmin"
+    )
     ADD_PROMOTIONS_BOTTON = InlineKeyboardButton(
         text="Добавить акцию", callback_data="addpromotions"
     )

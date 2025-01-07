@@ -1,3 +1,5 @@
+from typing import List
+
 from db.models import Order, Promotions
 
 HELP = "Если у вас есть вопросы по доставке, ценообразованию и качеству товара, то\
@@ -54,8 +56,8 @@ def refferal_link(bot_username, user_id) -> str:
     return f"https://t.me/{bot_username}?start={user_id}"
 
 
-def count_referrals(refs: list):
-    return f"Количество ваших рефералов: {len(refs)}"
+def count_referrals(refs: list, actives: int):
+    return f"Количество ваших рефералов: {len(refs)}\nАктивных - {actives}"
 
 
 def confrim_order(order: Order):
@@ -95,5 +97,8 @@ def get_order(order: Order):
 Дата создания: {order.time_created.strftime("%d.%m.%Y MSK")}
 """
 
-def get_promotion(promotion: Promotions):
-    return f"""ID Акции: {promotion.id}\n\n{promotion.descriptions}"""
+
+def get_promotions(promotions: List[Promotions]):
+    return "".join(
+        f"~{promo.descriptions}\n\n" for promo in promotions
+    )

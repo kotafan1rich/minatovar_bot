@@ -17,6 +17,9 @@ class ClientKeyboards(BaseKeyboards):
     REFERRAL_MENU_BOTTON = InlineKeyboardButton(
         text="Рефералы", callback_data="referralmenu"
     )
+    PROMOTIONS_BOTTON = InlineKeyboardButton(
+        text="Акции", callback_data="promotionsclient"
+    )
     HELP_BOTTON = InlineKeyboardButton(text="Помощь", callback_data="help")
     MY_REFERRALS_BOTTON = InlineKeyboardButton(
         text="Мои рефералы", callback_data="myreferrals"
@@ -31,6 +34,7 @@ class ClientKeyboards(BaseKeyboards):
             [cls.GET_PRCIE_BOTTON],
             [cls.GET_CURRENT_RATE_BOTTON],
             [cls.ORDER_BOTTON, cls.REFERRAL_MENU_BOTTON],
+            [cls.PROMOTIONS_BOTTON],
             [cls.HELP_BOTTON],
         ]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
