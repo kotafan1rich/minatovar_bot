@@ -1,10 +1,10 @@
 from typing import Union
 
+from cache.redis import build_key, cached
 from sqlalchemy import delete, exists, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models import Order, OrderStatus, Promotions, Referral, Settings, User
-from cache.redis import build_key, cached
+from db.models import Order, OrderStatus, Promos, Referral, Settings, User
 
 
 class BaseDAL:
@@ -14,150 +14,170 @@ class BaseDAL:
 
 class SettingsDAL(BaseDAL):
     async def param_exists(self, key: str) -> bool:
-        query = select(exists().where(Settings.key == key))
-        res = await self.db_session.execute(query)
-        return res.scalar()
+        async with self.db_session.begin():
+            query = select(exists().where(Settings.key == key))
+            res = await self.db_session.execute(query)
+            return res.scalar()
 
     async def update_param(self, key: str, value: float):
-        query = (
-            update(Settings)
-            .where(Settings.key == key)
-            .values(value=value)
-            .returning(Settings.value)
-        )
-        res = await self.db_session.execute(query)
-        await self.db_session.commit()
-        return res.scalar_one_or_none()
+        async with self.db_session.begin():
+            query = (
+                update(Settings)
+                .where(Settings.key == key)
+                .values(value=value)
+                .returning(Settings.value)
+            )
+            res = await self.db_session.execute(query)
+            await self.db_session.commit()
+            return res.scalar_one_or_none()
 
     async def set_param(self, key: str, value: float):
-        new_param = Settings(key=key, value=value)
-        self.db_session.add(new_param)
-        await self.db_session.commit()
-        return value
+        async with self.db_session.begin():
+            new_param = Settings(key=key, value=value)
+            self.db_session.add(new_param)
+            await self.db_session.commit()
+            return value
 
     @cached(key_builder=lambda db_session, key: build_key(key))
     async def get_param(self, key: str):
-        query = select(Settings.value).where(Settings.key == key)
-        res = await self.db_session.execute(query)
-        return res.scalar_one_or_none()
+        async with self.db_session.begin():
+            query = select(Settings.value).where(Settings.key == key)
+            res = await self.db_session.execute(query)
+            return res.scalar_one_or_none()
 
 
 class UserDAL(BaseDAL):
     async def add_user(self, user_id: int, username: str = None):
-        new_user = User(user_id=user_id, username=username)
-        self.db_session.add(new_user)
-        await self.db_session.commit()
-        return new_user
+        async with self.db_session.begin():
+            new_user = User(user_id=user_id, username=username)
+            self.db_session.add(new_user)
+            await self.db_session.commit()
+            return new_user
 
     async def update_user(self, user_id: int, **kwargs):
-        query = (
-            update(User)
-            .where(User.user_id == user_id)
-            .values(kwargs)
-            .returning(User.user_id)
-        )
-        res = await self.db_session.execute(query)
-        await self.db_session.commit()
-        return res.scalar_one_or_none()
+        async with self.db_session.begin():
+            query = (
+                update(User)
+                .where(User.user_id == user_id)
+                .values(kwargs)
+                .returning(User.user_id)
+            )
+            res = await self.db_session.execute(query)
+            await self.db_session.commit()
+            return res.scalar_one_or_none()
 
     async def user_exists(self, user_id: int) -> bool:
-        query = select(exists().where(User.user_id == user_id))
-        res = await self.db_session.execute(query)
-        return res.scalar()
+        async with self.db_session.begin():
+            query = select(exists().where(User.user_id == user_id))
+            res = await self.db_session.execute(query)
+            return res.scalar()
 
     async def get_user(self, user_id: int) -> Union[User, None]:
-        query = select(User).where(User.user_id == user_id)
-        res = await self.db_session.execute(query)
-        return res.scalar()
+        async with self.db_session.begin():
+            query = select(User).where(User.user_id == user_id)
+            res = await self.db_session.execute(query)
+            return res.scalar()
 
 
 class ReferralDAL(BaseDAL):
     async def add_referal(self, id_from: int, id_to: int):
-        new_referral = Referral(id_from=id_from, id_to=id_to)
-        self.db_session.add(new_referral)
-        await self.db_session.commit()
-        return new_referral
+        async with self.db_session.begin():
+            new_referral = Referral(id_from=id_from, id_to=id_to)
+            self.db_session.add(new_referral)
+            await self.db_session.commit()
+            return new_referral
 
     async def referral_exists(self, id_to: int):
-        query = select(exists().where(Referral.id_to == id_to))
-        res = await self.db_session.execute(query)
-        return res.scalar()
+        async with self.db_session.begin():
+            query = select(exists().where(Referral.id_to == id_to))
+            res = await self.db_session.execute(query)
+            return res.scalar()
 
     @cached(key_builder=lambda db_session, id_from: build_key(id_from))
     async def get_refferals(self, id_from: int):
-        query = select(Referral.id_to).where(Referral.id_from == id_from)
-        res = await self.db_session.execute(query)
-        return res.scalars().all()
+        async with self.db_session.begin():
+            query = select(Referral.id_to).where(Referral.id_from == id_from)
+            res = await self.db_session.execute(query)
+            return res.scalars().all()
 
 
 class OrderDAL(BaseDAL):
     async def add_order(self, user_id: int, **kwargs) -> Union[Order, None]:
-        order = Order(user_id=user_id, **kwargs)
-        self.db_session.add(order)
-        await self.db_session.commit()
-        return order
+        async with self.db_session.begin():
+            order = Order(user_id=user_id, **kwargs)
+            self.db_session.add(order)
+            await self.db_session.commit()
+            return order
 
     async def get_completed_orders_for_user(self, user_id: int):
-        query = (
-            select(Order.price_rub)
-            .where(Order.status == OrderStatus.COMPLETED, Order.user_id == user_id)
-            .order_by(Order.id)
-        )
-        result = await self.db_session.execute(query)
-        return result.scalars().all()
+        async with self.db_session.begin():
+            query = (
+                select(Order.price_rub)
+                .where(Order.status == OrderStatus.COMPLETED, Order.user_id == user_id)
+                .order_by(Order.id)
+            )
+            result = await self.db_session.execute(query)
+            return result.scalars().all()
 
     async def get_orders_for_user(self, user_id: int):
-        query = select(Order).where(Order.user_id == user_id).order_by(Order.id)
-        result = await self.db_session.execute(query)
-        return result.scalars().all()
+        async with self.db_session.begin():
+            query = select(Order).where(Order.user_id == user_id).order_by(Order.id)
+            result = await self.db_session.execute(query)
+            return result.scalars().all()
 
     async def get_completed_orders(self):
-        query = (
-            select(Order)
-            .where(Order.status == OrderStatus.COMPLETED)
-            .order_by(Order.id)
-        )
-        result = await self.db_session.execute(query)
-        return result.scalars().all()
+        async with self.db_session.begin():
+            query = (
+                select(Order)
+                .where(Order.status == OrderStatus.COMPLETED)
+                .order_by(Order.id)
+            )
+            result = await self.db_session.execute(query)
+            return result.scalars().all()
 
     async def get_all_active_orders(self):
-        query = (
-            select(Order)
-            .where(Order.status != OrderStatus.COMPLETED)
-            .order_by(Order.id)
-        )
-        result = await self.db_session.execute(query)
-        return result.scalars().all()
+        async with self.db_session.begin():
+            query = (
+                select(Order)
+                .where(Order.status != OrderStatus.COMPLETED)
+                .order_by(Order.id)
+            )
+            result = await self.db_session.execute(query)
+            return result.scalars().all()
 
     async def update_order(self, id: int, **kwargs):
-        query = update(Order).where(Order.id == id).values(kwargs).returning(Order)
-        res = await self.db_session.execute(query)
-        await self.db_session.commit()
-        return res.scalar_one_or_none()
+        async with self.db_session.begin():
+            query = update(Order).where(Order.id == id).values(kwargs).returning(Order)
+            res = await self.db_session.execute(query)
+            await self.db_session.commit()
+            return res.scalar_one_or_none()
 
     async def delete_order(self, id: int):
-        query = delete(Order).where(Order.id == id)
-        await self.db_session.execute(query)
-        await self.db_session.commit()
-        return id
+        async with self.db_session.begin():
+            query = delete(Order).where(Order.id == id)
+            await self.db_session.execute(query)
+            await self.db_session.commit()
+            return id
 
-class PromotionsDAL(BaseDAL):
-    async def get_all_promotions(self):
-        query = (
-                select(Promotions)
-                .order_by(Promotions.id)
-            )
-        result = await self.db_session.execute(query)
-        return result.scalars().all()
 
-    async def add_promotion(self, text: str):
-        new_promotion = Promotions(descriptions=text)
-        self.db_session.add(new_promotion)
-        await self.db_session.commit()
-        return new_promotion
+class promosDAL(BaseDAL):
+    @cached(key_builder=lambda db_session: build_key("promo"))
+    async def get_all_promos(self):
+        async with self.db_session.begin():
+            query = select(Promos).order_by(Promos.id)
+            result = await self.db_session.execute(query)
+            return result.scalars().all()
 
-    async def delete_promotion(self, id: int):
-        query = delete(Promotions).where(Promotions.id == id)
-        await self.db_session.execute(query)
-        await self.db_session.commit()
-        return id
+    async def add_promo(self, text: str):
+        async with self.db_session.begin():
+            new_promo = Promos(descriptions=text)
+            self.db_session.add(new_promo)
+            await self.db_session.commit()
+            return new_promo
+
+    async def delete_promo(self, id: int):
+        async with self.db_session.begin():
+            query = delete(Promos).where(Promos.id == id)
+            await self.db_session.execute(query)
+            await self.db_session.commit()
+            return id

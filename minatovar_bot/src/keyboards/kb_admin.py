@@ -1,9 +1,6 @@
-from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-)
-
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from db.models import OrderStatus
+
 from .common import BaseKeyboards
 
 
@@ -14,14 +11,12 @@ class AdminKeyboards(BaseKeyboards):
     ALL_COMPLETED_ORDERS_BOTTON = InlineKeyboardButton(
         text="Завершенные заказы", callback_data="admin_completed"
     )
-    PROMOTIONS_BOTTON = InlineKeyboardButton(
-        text="Акции", callback_data="promotionsadmin"
+    promos_BOTTON = InlineKeyboardButton(text="Акции", callback_data="promosadmin")
+    ADD_promos_BOTTON = InlineKeyboardButton(
+        text="Добавить акцию", callback_data="addpromos"
     )
-    ADD_PROMOTIONS_BOTTON = InlineKeyboardButton(
-        text="Добавить акцию", callback_data="addpromotions"
-    )
-    ALL_PROMOTIONS_BOTTON = InlineKeyboardButton(
-        text="Все акции", callback_data="allpromotionsadmin"
+    ALL_promos_BOTTON = InlineKeyboardButton(
+        text="Все акции", callback_data="allpromosadmin"
     )
     CHANGE_SETTINGS_BOTTON = InlineKeyboardButton(
         text="Изменить цены", callback_data="changesettings"
@@ -42,22 +37,22 @@ class AdminKeyboards(BaseKeyboards):
         bottons = [
             [cls.ALL_ACTIVE_ORDERS_BOTTON],
             [cls.ALL_COMPLETED_ORDERS_BOTTON],
-            [cls.CHANGE_SETTINGS_BOTTON, cls.PROMOTIONS_BOTTON],
+            [cls.CHANGE_SETTINGS_BOTTON, cls.promos_BOTTON],
             [cls.BACK_BOTTON],
         ]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 
     @classmethod
-    def admin_promotions_menu(cls):
+    def admin_promos_menu(cls):
         bottons = [
-            [cls.ALL_PROMOTIONS_BOTTON],
-            [cls.ADD_PROMOTIONS_BOTTON],
+            [cls.ALL_promos_BOTTON],
+            [cls.ADD_promos_BOTTON],
             [cls.BACK_TO_ADMIN_MENU],
         ]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 
     @classmethod
-    def get_info_promotion_inline(cls, id: int):
+    def get_info_promo_inline(cls, id: int):
         REMOVE_BOTTON = InlineKeyboardButton(
             text="Удалить акцию", callback_data=f"removepromo_{id}"
         )

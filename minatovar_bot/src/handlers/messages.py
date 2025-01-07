@@ -1,6 +1,6 @@
 from typing import List
 
-from db.models import Order, Promotions
+from db.models import Order, Promos
 
 HELP = "Если у вас есть вопросы по доставке, ценообразованию и качеству товара, то\
 можете написать нашему администратору\n\nАдминистратор: @UglyMJoy"
@@ -14,16 +14,12 @@ SEND_PRICE = (
 
 TYPE_ITEM = "Обувь/Одежда"
 
-ADMIN_HELP = (
-    "/adminhelp\n/shoes число (доставка)\n/cloth число (доставка)\n/rate число (курс)"
-)
-
 BAD_FORMAT_ERROR = "Неправильный формат ввода"
 NON_ARGUMENT_ERROR = "Не введён аргумент"
 BOT_IS_UNVAILABLE = "Бот в данный момент недоступен. Приносим свои изменения"
 UNCORRECT_URL = "Некорректная ссылка"
 SET_USERNAME = "Установите username и повторите попытку"
-NO_PROMOTIONS = "Нет акций"
+NO_PROMOS = "Нет акций"
 
 
 SEND_COMMAND = "Отпарвьте команду"
@@ -98,7 +94,5 @@ def get_order(order: Order):
 """
 
 
-def get_promotions(promotions: List[Promotions]):
-    return "".join(
-        f"~{promo.descriptions}\n\n" for promo in promotions
-    )
+def get_promos(promos: List[Promos]):
+    return "".join(f"~{promo.descriptions}\n\n" for promo in promos)

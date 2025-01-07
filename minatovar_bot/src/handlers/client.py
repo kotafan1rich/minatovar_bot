@@ -3,30 +3,29 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from config import STATIC_FILES
 from create_bot import bot
-from db.dals import PromotionsDAL, ReferralDAL, SettingsDAL
+from db.dals import ReferralDAL, SettingsDAL, promosDAL
 from db.models import OrderTypeItem
 from fsms import FSMGetPrice
 from keyboards import ClientKeyboards
 from middlewares.middleware import StartMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from utils.orders import get_active_referrals
 
 from .messages import (
     BOT_IS_UNVAILABLE,
     HELP,
     MAIN_MENU,
+    NO_PROMOS,
     SEND_PRICE,
     START,
     TYPE_ITEM,
     WHATS_NEXT,
     count_referrals,
-    get_promotions,
+    get_promos,
     refferal_link,
     send_current_rate_mes,
     send_price_mes,
 )
-
 
 client_router = Router(name="client_router")
 start_middleware = StartMiddleware()
@@ -70,16 +69,23 @@ async def help(call: types.CallbackQuery):
     )
 
 
-@client_router.callback_query(F.data == "promotionsclient")
-async def promotions(call: types.CallbackQuery, db_session: AsyncSession):
+@client_router.callback_query(F.data == "promosclient")
+async def promos(call: types.CallbackQuery, db_session: AsyncSession):
     await call.answer()
-    promotions_dal = PromotionsDAL(db_session)
-    all_promotions = await promotions_dal.get_all_promotions()
-    await bot.send_message(
-        chat_id=call.from_user.id,
-        text=get_promotions(all_promotions),
-        reply_markup=ClientKeyboards.close_inline(),
-    )
+    promos_dal = promosDAL(db_session)
+    all_promos = await promos_dal.get_all_promos()
+    if all_promos:
+        await bot.send_message(
+            chat_id=call.from_user.id,
+            text=get_promos(all_promos),
+            reply_markup=ClientKeyboards.close_inline(),
+        )
+    else:
+        await bot.send_message(
+            chat_id=call.from_user.id,
+            text=NO_PROMOS,
+            reply_markup=ClientKeyboards.close_inline(),
+        )
 
 
 @client_router.callback_query(F.data == "getprice")

@@ -2,17 +2,16 @@ from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from create_bot import bot
-from db.dals import OrderDAL, PromotionsDAL, SettingsDAL, UserDAL
+from db.dals import OrderDAL, SettingsDAL, UserDAL, promosDAL
 from db.models import OrderStatus
 from fsms import FSMAdmin
 from keyboards import AdminKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .messages import (
-    ADMIN_HELP,
     BAD_FORMAT_ERROR,
     NO_ORDERS,
-    NO_PROMOTIONS,
+    NO_PROMOS,
     NON_ARGUMENT_ERROR,
     SEND_COMMAND,
     SEND_DESCRIPTION,
@@ -21,7 +20,7 @@ from .messages import (
     WHATS_NEXT,
     get_order,
     get_order_for_admin,
-    get_promotions,
+    get_promos,
 )
 
 admins = [1019030670, 1324716819, 1423930901]
@@ -38,26 +37,26 @@ async def admin(message: types.Message):
     )
 
 
-@admin_router.callback_query(F.data == "promotionsadmin")
-async def promotions_menu(call: types.CallbackQuery):
+@admin_router.callback_query(F.data == "promosadmin")
+async def promos_menu(call: types.CallbackQuery):
     await bot.edit_message_text(
         chat_id=call.from_user.id,
         message_id=call.message.message_id,
         text=WHATS_NEXT,
-        reply_markup=AdminKeyboards.admin_promotions_menu(),
+        reply_markup=AdminKeyboards.admin_promos_menu(),
     )
 
 
-@admin_router.callback_query(F.data == "allpromotionsadmin")
-async def get_all_promotions(call: types.CallbackQuery, db_session: AsyncSession):
-    promotion_dal = PromotionsDAL(db_session)
-    all_promotions = await promotion_dal.get_all_promotions()
-    if all_promotions:
-        for promotion in all_promotions:
+@admin_router.callback_query(F.data == "allpromosadmin")
+async def get_all_promos(call: types.CallbackQuery, db_session: AsyncSession):
+    promo_dal = promosDAL(db_session)
+    all_promos = await promo_dal.get_all_promos()
+    if all_promos:
+        for promo in all_promos:
             await bot.send_message(
                 chat_id=call.from_user.id,
-                text=get_promotions([promotion]),
-                reply_markup=AdminKeyboards.get_info_promotion_inline(promotion.id),
+                text=get_promos([promo]),
+                reply_markup=AdminKeyboards.get_info_promo_inline(promo.id),
             )
         await bot.send_message(
             call.from_user.id,
@@ -67,19 +66,19 @@ async def get_all_promotions(call: types.CallbackQuery, db_session: AsyncSession
     else:
         await bot.send_message(
             call.from_user.id,
-            NO_PROMOTIONS,
+            NO_PROMOS,
             reply_markup=AdminKeyboards.admin_menu_inline(),
         )
 
 
-@admin_router.callback_query(F.data == "addpromotions")
-async def add_promotion_admin(call: types.CallbackQuery, state: FSMContext):
+@admin_router.callback_query(F.data == "addpromos")
+async def add_promo_admin(call: types.CallbackQuery, state: FSMContext):
     await bot.send_message(
         call.from_user.id,
         SEND_DESCRIPTION,
         reply_markup=AdminKeyboards.back_to_admin_menu_inline(),
     )
-    await state.set_state(FSMAdmin.promotion)
+    await state.set_state(FSMAdmin.promo)
 
 
 @admin_router.callback_query(F.data == "changesettings")
@@ -92,13 +91,13 @@ async def change_settings_admin(call: types.CallbackQuery):
     )
 
 
-@admin_router.message(FSMAdmin.promotion)
+@admin_router.message(FSMAdmin.promo)
 async def get_description_admin(
     message: types.Message, state: FSMContext, db_session: AsyncSession
 ):
-    promotion_dal = PromotionsDAL(db_session)
-    new_promotion = await promotion_dal.add_promotion(message.text)
-    await bot.send_message(message.from_user.id, get_promotions([new_promotion]))
+    promo_dal = promosDAL(db_session)
+    new_promo = await promo_dal.add_promo(message.text)
+    await bot.send_message(message.from_user.id, get_promos([new_promo]))
     await state.clear()
 
 
@@ -106,8 +105,8 @@ async def get_description_admin(
 async def remove_promo(
     call: types.CallbackQuery, calback_arg: str, db_session: AsyncSession
 ):
-    promotion_dal = PromotionsDAL(db_session)
-    await promotion_dal.delete_promotion(int(calback_arg))
+    promo_dal = promosDAL(db_session)
+    await promo_dal.delete_promo(int(calback_arg))
     await bot.delete_message(
         chat_id=call.from_user.id, message_id=call.message.message_id
     )
@@ -266,9 +265,3 @@ async def change_current_rate(message: types.Message, db_session: AsyncSession):
         await bot.send_message(message.from_user.id, NON_ARGUMENT_ERROR)
     except ValueError:
         await bot.send_message(message.from_user.id, BAD_FORMAT_ERROR)
-
-
-@admin_router.message(Command("adminhelp"), F.from_user.id.in_(admins))
-async def admin_help(message: types.Message):
-    if message.from_user.id in admins:
-        await bot.send_message(message.from_user.id, ADMIN_HELP)

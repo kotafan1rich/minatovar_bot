@@ -1,24 +1,26 @@
+import enum
+
 from sqlalchemy import (
+    BIGINT,
     Column,
     DateTime,
     Enum,
     Float,
-    Index,
-    String,
-    Integer,
     ForeignKey,
+    Index,
+    Integer,
+    String,
     UniqueConstraint,
-    BIGINT,
     func,
 )
 from sqlalchemy.orm import declarative_base, relationship
-import enum
 
 Base = declarative_base()
 
 
 class OrderStatus(enum.Enum):
     CREATED = "Создан"
+    WAIT_FOR_PAY = "Ожидает оплаты"
     CONFRIMED = "Подтверждён"
     IN_DILIVER = "В доставке"
     COMPLETED = "Завершён"
@@ -99,8 +101,8 @@ class Settings(Base):
     value = Column(Float, nullable=False)
 
 
-class Promotions(Base):
-    __tablename__ = "promotions"
+class Promos(Base):
+    __tablename__ = "promos"
 
     id = Column(Integer, primary_key=True)
     descriptions = Column(String(255), nullable=False)

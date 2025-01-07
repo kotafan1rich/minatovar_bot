@@ -20,4 +20,4 @@ class FSMAdmin(StatesGroup):
     shoes_price = State()
     cloth_price = State()
     current_rate = State()
-    promotion = State()
+    promo = State()
