@@ -39,7 +39,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:17
+    image: postgres:17-bullseye
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
