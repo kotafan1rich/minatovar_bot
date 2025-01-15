@@ -105,4 +105,4 @@ class Promos(Base):
     __tablename__ = "promos"
 
     id = Column(Integer, primary_key=True)
-    descriptions = Column(String(255), nullable=False)
+    descriptions = Column(String(4096), nullable=False)
