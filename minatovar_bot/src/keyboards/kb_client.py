@@ -38,6 +38,6 @@ class ClientKeyboards(BaseKeyboards):
     def get_referral_menu_inline(cls):
         bottons = [
             [cls.REFERRAL_URL_BOTTON, cls.MY_REFERRALS_BOTTON],
-            [cls.BACK_BOTTON],
+            [cls.CLOSE_BOTTON],
         ]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
