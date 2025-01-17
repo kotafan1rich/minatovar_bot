@@ -231,7 +231,7 @@ async def get_param_to_settings_admin(
 async def change_shoes_price(message: types.Message, db_session: AsyncSession):
     try:
         price = await SettingsDAL(db_session).update_param(
-            key="shoes_price", value=float(message.text)
+            key="shoes_price", value=float(message.text.replace(",", "."))
         )
         await bot.send_message(message.from_user.id, str(price))
     except IndexError:
@@ -244,7 +244,7 @@ async def change_shoes_price(message: types.Message, db_session: AsyncSession):
 async def change_cloth_price(message: types.Message, db_session: AsyncSession):
     try:
         price = await SettingsDAL(db_session).update_param(
-            key="cloth_price", value=float(message.text)
+            key="cloth_price", value=float(message.text.replace(",", "."))
         )
         await bot.send_message(message.from_user.id, str(price))
     except IndexError:
@@ -257,7 +257,7 @@ async def change_cloth_price(message: types.Message, db_session: AsyncSession):
 async def change_current_rate(message: types.Message, db_session: AsyncSession):
     try:
         rate = await SettingsDAL(db_session).update_param(
-            key="current_rate", value=float(message.text)
+            key="current_rate", value=float(message.text.replace(",", "."))
         )
         await bot.send_message(message.from_user.id, str(rate))
     except IndexError:
