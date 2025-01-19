@@ -1,16 +1,42 @@
-FROM python:3.9.21-slim-bookworm 
-RUN mkdir /app
+# Строим образ с зависимостями
+FROM python:3.9-slim AS builder
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN python -m pip install --upgrade pip
-RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+# Отключаем запись байт-кода, чтобы не засорять контейнер
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Устанавливаем зависимости
-RUN pip install -r requirements.txt
+# Обновляем пакеты и устанавливаем зависимости
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    build-essential \
+    libxml2-dev \
+    libxslt-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Копируем исходный код бота в контейнер
+# Обновляем pip и создаем колеса для зависимостей
+COPY requirements.txt . 
+RUN python3 -m pip install --upgrade pip && \
+    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+
+# Финальный этап
+FROM python:3.9-bullseye
+
+WORKDIR /app
+
+# Копируем зависимости из builder
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt . 
+
+# Устанавливаем зависимости из wheels
+RUN python3 -m pip install --no-cache-dir /wheels/*
+
+# Копируем остальные файлы
 COPY . .
-# Команда для запуска бота
+
+# Даем права на выполнение скриптов
 RUN chmod a+x docker/*.sh
