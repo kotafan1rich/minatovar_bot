@@ -174,16 +174,20 @@ async def change_order_status(
     status = split_arg[0]
     order_id = int(split_arg[1])
     order_dal = OrderDAL(db_session)
+    user_dal = UserDAL(db_session)
+
     status_enum = next((s for s in OrderStatus if s.value == status), None)
 
     if status_enum is None:
         raise ValueError(f"Invalid status: {status}")
     changed_order = await order_dal.update_order(id=order_id, status=status_enum)
+    user = await user_dal.get_user(changed_order.user_id)
+    username = user.username
 
     await bot.edit_message_text(
         chat_id=user_id,
         message_id=call.message.message_id,
-        text=get_order(changed_order),
+        text=get_order_for_admin(changed_order, username),
         reply_markup=AdminKeyboards.get_info_order_inline(changed_order.id),
     )
 
