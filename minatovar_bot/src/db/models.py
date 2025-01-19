@@ -1,4 +1,5 @@
 import enum
+from tkinter import CASCADE
 
 from sqlalchemy import (
     BIGINT,
@@ -56,8 +57,15 @@ class Referral(Base):
     __tablename__ = "referrals"
 
     id = Column(Integer, primary_key=True)
-    id_from = Column(BIGINT, ForeignKey("users.user_id"), nullable=False)
-    id_to = Column(BIGINT, ForeignKey("users.user_id"), nullable=False, unique=True)
+    id_from = Column(
+        BIGINT, ForeignKey("users.user_id", ondelete=CASCADE), nullable=False
+    )
+    id_to = Column(
+        BIGINT,
+        ForeignKey("users.user_id", ondelete=CASCADE),
+        nullable=False,
+        unique=True,
+    )
 
     referrer = relationship(
         "User",
