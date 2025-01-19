@@ -21,7 +21,7 @@ async def get_active_referrals(user_id: int, user_referrals, db_session) -> int:
 
 async def calculate_rub_price(
     user_id: int, price_cny: int, type_item: OrderTypeItem, db_session
-):
+) -> int:
     settings_dal = SettingsDAL(db_session)
     referral_dal = ReferralDAL(db_session)
 
