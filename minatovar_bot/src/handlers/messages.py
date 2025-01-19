@@ -90,7 +90,7 @@ def get_order(order: Order):
 Цена (RUB): {order.price_rub}₽
 Цена (CNY): {order.price_cny}¥
 Адрес: {order.addres}
-Дата создания: {order.time_created.strftime("%d.%m.%Y MSK")}
+Дата создания: {order.time_created.strftime("%d.%m.%Y")}
 """
 
 
