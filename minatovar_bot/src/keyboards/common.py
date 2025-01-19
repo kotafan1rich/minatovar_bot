@@ -2,8 +2,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from db.models import OrderTypeItem
 
 class BaseKeyboards:
-    BACK_BOTTON = InlineKeyboardButton(text="Назад", callback_data="back")
-    CLOSE_BOTTON = InlineKeyboardButton(text="Закрыть", callback_data="close")
+    BACK_BOTTON = InlineKeyboardButton(text="⬅️", callback_data="back")
+    CLOSE_BOTTON = InlineKeyboardButton(text="❌ Закрыть", callback_data="close")
     GET_CLOTH_BOTTON = InlineKeyboardButton(
         text=OrderTypeItem.CLOTH.value,
         callback_data=f"type_{OrderTypeItem.CLOTH.value}",

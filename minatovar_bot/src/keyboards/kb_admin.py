@@ -6,10 +6,10 @@ from .common import BaseKeyboards
 
 class AdminKeyboards(BaseKeyboards):
     ALL_ACTIVE_ORDERS_BOTTON = InlineKeyboardButton(
-        text="Активные заказы", callback_data="admin_active"
+        text="🔁 Активные заказы", callback_data="admin_active"
     )
     ALL_COMPLETED_ORDERS_BOTTON = InlineKeyboardButton(
-        text="Завершенные заказы", callback_data="admin_completed"
+        text="✅ Завершенные заказы", callback_data="admin_completed"
     )
     promos_BOTTON = InlineKeyboardButton(text="Акции", callback_data="promosadmin")
     ADD_promos_BOTTON = InlineKeyboardButton(
@@ -30,7 +30,7 @@ class AdminKeyboards(BaseKeyboards):
     CURRENT_RATE_BOTTON = InlineKeyboardButton(
         text="Курс", callback_data="settings_rate"
     )
-    BACK_TO_ADMIN_MENU = InlineKeyboardButton(text="Назад", callback_data="adminback")
+    BACK_TO_ADMIN_MENU = InlineKeyboardButton(text="⬅️", callback_data="adminback")
 
     @classmethod
     def admin_menu_inline(cls):

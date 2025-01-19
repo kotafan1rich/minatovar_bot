@@ -5,14 +5,14 @@ from .common import BaseKeyboards
 
 class ClientKeyboards(BaseKeyboards):
     GET_PRCIE_BOTTON = InlineKeyboardButton(
-        text="Рассчитать стоимость товара", callback_data="getprice"
+        text="💲 Рассчитать стоимость товара", callback_data="getprice"
     )
     GET_CURRENT_RATE_BOTTON = InlineKeyboardButton(
-        text="Текущий курс юаня", callback_data="getrate"
+        text="💹 Текущий курс юаня", callback_data="getrate"
     )
     ORDER_BOTTON = InlineKeyboardButton(text="Заказы", callback_data="orders")
     REFERRAL_MENU_BOTTON = InlineKeyboardButton(
-        text="Рефералы", callback_data="referralmenu"
+        text="📶 Рефералы", callback_data="referralmenu"
     )
     promos_BOTTON = InlineKeyboardButton(text="Акции", callback_data="promosclient")
     HELP_BOTTON = InlineKeyboardButton(text="Помощь", callback_data="help")
