@@ -28,10 +28,10 @@ NO_ORDERS = "Нет заказов"
 SEND_NEW_VALUE = "Отправьте новое значение"
 SEND_DESCRIPTION = "Отправьте описание акции"
 
-MAIN_MENU = "Главное меню"
-WHATS_NEXT = "Что дальше?"
+MAIN_MENU = "Выберите нужный раздел, чтобы начать работу с ботом."
+WHATS_NEXT = "Что вы хотите сделать дальше?"
 USERS_NO_ORDERS = "У вас нет заказов"
-SEND_URL = "Отпрвьте url товара"
+SEND_ARTICLE = "Отпрвьте артикул товара"
 SEND_ADDRES = "Отправьте адрес"
 SEND_SIZE = "Отправьте размер"
 ADDED = "Добавлено"
@@ -44,21 +44,24 @@ def send_price_mes(price) -> str:
 интересных вещей уже есть в нашем магазине 🤙"
 
 
-def send_current_rate_mes(current_rate) -> str:
-    return f"1¥ = {current_rate}₽"
+def send_current_rate_mes(current_rate: float) -> str:
+    return f"💵 Курс валюты:\nЮань (CNY): {current_rate}₽"
 
 
 def refferal_link(bot_username, user_id) -> str:
-    return f"https://t.me/{bot_username}?start={user_id}"
+    return f"📢 Поделитесь своей реферальной ссылкой:\n\
+https://t.me/{bot_username}?start={user_id}\n\
+Приглашайте друзей и получайте бонусы!"
 
 
 def count_referrals(refs: list, actives: int):
-    return f"Количество ваших рефералов: {len(refs)}\nАктивных - {actives}"
+    return f"📈 Мои рефералы:\nОбщее количество: {len(refs)}\nАктивных \
+(покупки больше 5000₽): {actives}"
 
 
 def confrim_order(order: Order):
     return f"""Проверьте:
-Ссылка: {order.url}
+Артикул: {order.article}
 Размер: {order.size}
 Тип: {order.type_item}
 Цена (RUB): {order.price_rub}₽
@@ -70,7 +73,7 @@ def confrim_order(order: Order):
 def get_order_for_admin(order: Order, username: str):
     return f"""ID заказа: {order.id}
 Статус: {order.status.value}
-Ссылка: {order.url}
+Артикул: {order.article}
 Размер: {order.size}
 Тип: {order.type_item.value}
 Цена (RUB): {order.price_rub}₽
@@ -84,7 +87,7 @@ def get_order_for_admin(order: Order, username: str):
 def get_order(order: Order):
     return f"""ID заказа: {order.id}
 Статус: {order.status.value}
-Ссылка: {order.url}
+Артикул: {order.article}
 Размер: {order.size}
 Тип: {order.type_item.value}
 Цена (RUB): {order.price_rub}₽
@@ -95,4 +98,4 @@ def get_order(order: Order):
 
 
 def get_promos(promos: List[Promos]):
-    return "".join(f"~{promo.descriptions}\n\n" for promo in promos)
+    return "".join(f"{promo.descriptions}\n\n" for promo in promos)

@@ -8,13 +8,13 @@ from .common import BaseKeyboards
 
 class OrderKeyboards(BaseKeyboards):
     CREATE_ORDER_BOTTON = InlineKeyboardButton(
-        text="Сделать заказ", callback_data="createorder"
+        text="✏️ Сделать заказ", callback_data="createorder"
     )
-    MY_ORDERS_BOTTON = InlineKeyboardButton(text="Мои заказы", callback_data="myorders")
+    MY_ORDERS_BOTTON = InlineKeyboardButton(
+        text="📜 Мои заказы", callback_data="myorders"
+    )
     CONFRIM_BOTTON = InlineKeyboardButton(text="Да всё верно", callback_data="confrim")
-    BACK_TO_ORDERS_BOTTON = InlineKeyboardButton(
-        text="Назад", callback_data="backtoorders"
-    )
+    BACK_TO_ORDERS_BOTTON = InlineKeyboardButton(text="◀️", callback_data="backtoorders")
 
     @classmethod
     def order_menu_inline(cls):

@@ -1,4 +1,5 @@
 import enum
+
 from sqlalchemy import (
     BIGINT,
     Column,
@@ -88,7 +89,7 @@ class Order(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(BIGINT, ForeignKey("users.user_id"), nullable=False)
     status = Column(Enum(OrderStatus), default=OrderStatus.CREATED, nullable=False)
-    url = Column(String(255), nullable=False)
+    article = Column(String(255), nullable=False)
     addres = Column(String(255), nullable=False)
     price_rub = Column(Float, nullable=False, default=0.0)
     price_cny = Column(Integer, nullable=False, default=0)

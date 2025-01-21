@@ -2,7 +2,7 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class FSMOrder(StatesGroup):
-    url = State()
+    article = State()
     type_item = State()
     addres = State()
     price_cny = State()

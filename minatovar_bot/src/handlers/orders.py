@@ -1,23 +1,22 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
+from config import STATIC_FILES
 from create_bot import bot
 from db.dals import OrderDAL, UserDAL
 from db.models import Order, OrderTypeItem
 from fsms import FSMOrder
 from keyboards import ClientKeyboards, OrderKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
-from config import STATIC_FILES
-from utils.orders import calculate_rub_price, is_valid_link
+from utils.orders import calculate_rub_price
 
 from .messages import (
     MAIN_MENU,
     SEND_ADDRES,
+    SEND_ARTICLE,
     SEND_PRICE,
     SEND_SIZE,
-    SEND_URL,
     SET_USERNAME,
     TYPE_ITEM,
-    UNCORRECT_URL,
     USERS_NO_ORDERS,
     WHATS_NEXT,
     confrim_order,
@@ -73,10 +72,10 @@ async def create_order(call: types.CallbackQuery, state: FSMContext):
     if call.from_user.username:
         await bot.send_message(
             user_id,
-            SEND_URL,
+            SEND_ARTICLE,
             reply_markup=OrderKeyboards.close_inline(),
         )
-        await state.set_state(FSMOrder.url)
+        await state.set_state(FSMOrder.article)
     else:
         await bot.send_message(
             user_id,
@@ -85,24 +84,24 @@ async def create_order(call: types.CallbackQuery, state: FSMContext):
         )
 
 
-@order_roter.message(FSMOrder.url)
-async def get_url(messgae: types.Message, state: FSMContext):
-    url = messgae.text
+@order_roter.message(FSMOrder.article)
+async def get_article(messgae: types.Message, state: FSMContext):
+    article = messgae.text
     user_id = messgae.from_user.id
-    if is_valid_link(url):
-        await state.update_data(url=url)
-        await bot.send_message(
-            user_id,
-            TYPE_ITEM,
-            reply_markup=OrderKeyboards.get_type_item_inline(),
-        )
-        await state.set_state(FSMOrder.type_item)
-    else:
-        await bot.send_message(
-            user_id,
-            UNCORRECT_URL,
-            reply_markup=OrderKeyboards.back_to_orders_inline(),
-        )
+    # if is_valid_link(url):
+    await state.update_data(article=article)
+    await bot.send_message(
+        user_id,
+        TYPE_ITEM,
+        reply_markup=OrderKeyboards.get_type_item_inline(),
+    )
+    await state.set_state(FSMOrder.type_item)
+    # else:
+    #     await bot.send_message(
+    #         user_id,
+    #         UNCORRECT_URL,
+    #         reply_markup=OrderKeyboards.back_to_orders_inline(),
+    #     )
 
 
 @order_roter.callback_query(FSMOrder.type_item, F.data.startswith("type_"))
