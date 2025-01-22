@@ -211,7 +211,7 @@ async def confrim(
         user_id, MAIN_MENU, reply_markup=ClientKeyboards.main_menu_inline_kb()
     )
 
-    for admin_id in admins:
-        await bot.send_message(
-            chat_id=admin_id, text=get_new_order_for_admin(created_order, username)
-        )
+
+    await bot.send_message(
+        chat_id="-1002174701809", text=get_new_order_for_admin(created_order, username)
+    )
