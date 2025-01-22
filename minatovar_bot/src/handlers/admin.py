@@ -8,6 +8,8 @@ from fsms import FSMAdmin
 from keyboards import AdminKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from create_bot import admins
+
 from .messages import (
     BAD_FORMAT_ERROR,
     NO_ORDERS,
@@ -18,12 +20,10 @@ from .messages import (
     SEND_NEW_VALUE,
     WHAT_CHANGE_QUSTION,
     WHATS_NEXT,
-    get_order,
     get_order_for_admin,
     get_promos,
 )
 
-admins = [1019030670, 1324716819, 1423930901]
 
 admin_router = Router(name="admin_router")
 

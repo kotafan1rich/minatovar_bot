@@ -9,6 +9,8 @@ from keyboards import ClientKeyboards, OrderKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.orders import calculate_rub_price
 
+from create_bot import admins
+
 from .messages import (
     MAIN_MENU,
     SEND_ADDRES,
@@ -20,6 +22,7 @@ from .messages import (
     USERS_NO_ORDERS,
     WHATS_NEXT,
     confrim_order,
+    get_new_order_for_admin,
     get_order,
 )
 
@@ -185,6 +188,8 @@ async def confrim(
     call: types.CallbackQuery, state: FSMContext, db_session: AsyncSession
 ):
     user_id = call.from_user.id
+    username = call.from_user.username
+
     user_dal = UserDAL(db_session)
     order_dal = OrderDAL(db_session)
     data = await state.get_data()
@@ -192,7 +197,7 @@ async def confrim(
         data["type_item"] = OrderTypeItem.SHOES
     else:
         data["type_item"] = OrderTypeItem.CLOTH
-    await user_dal.update_user(user_id=user_id, username=call.from_user.username)
+    await user_dal.update_user(user_id=user_id, username=username)
     created_order = await order_dal.add_order(user_id=user_id, **data)
 
     await call.answer()
@@ -205,3 +210,8 @@ async def confrim(
     await bot.send_message(
         user_id, MAIN_MENU, reply_markup=ClientKeyboards.main_menu_inline_kb()
     )
+
+    for admin_id in admins:
+        await bot.send_message(
+            chat_id=admin_id, text=get_new_order_for_admin(created_order, username)
+        )

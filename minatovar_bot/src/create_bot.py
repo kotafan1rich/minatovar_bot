@@ -8,8 +8,12 @@ from db.connection import REDIS_URL
 
 storage = RedisStorage.from_url(REDIS_URL)
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
+admins = [1019030670, 1324716819, 1423930901]
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(storage=storage)

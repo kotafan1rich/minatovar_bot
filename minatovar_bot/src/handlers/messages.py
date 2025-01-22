@@ -83,6 +83,20 @@ def get_order_for_admin(order: Order, username: str):
 Дата создания: {order.time_created.strftime("%d.%m.%Y %H:%M:%S MSK")}
 """
 
+def get_new_order_for_admin(order: Order, username: str):
+    return f"""!!!НОВЫЙ ЗАКАЗ!!!
+ID заказа: {order.id}
+Статус: {order.status.value}
+Артикул: {order.article}
+Размер: {order.size}
+Тип: {order.type_item.value}
+Цена (RUB): {order.price_rub}₽
+Цена (CNY): {order.price_cny}¥
+Адрес: {order.addres}
+Пользователь: @{username}
+Дата создания: {order.time_created.strftime("%d.%m.%Y %H:%M:%S MSK")}
+"""
+
 
 def get_order(order: Order):
     return f"""ID заказа: {order.id}
