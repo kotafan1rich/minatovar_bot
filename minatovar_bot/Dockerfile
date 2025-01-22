@@ -12,11 +12,13 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     gcc \
+    tzdata \
     libpq-dev \
     build-essential \
     libxml2-dev \
     libxslt-dev && \
     rm -rf /var/lib/apt/lists/*
+
 
 # Обновляем pip и создаем колеса для зависимостей
 COPY requirements.txt . 
@@ -31,6 +33,9 @@ WORKDIR /app
 # Копируем зависимости из builder
 COPY --from=builder /app/wheels /wheels
 COPY --from=builder /app/requirements.txt . 
+
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Устанавливаем зависимости из wheels
 RUN python3 -m pip install --no-cache-dir /wheels/*

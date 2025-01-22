@@ -19,12 +19,16 @@ Base = declarative_base()
 
 
 class OrderStatus(enum.Enum):
-    CREATED = "Создан"
-    WAIT_FOR_PAY = "Ожидает оплаты"
-    CONFRIMED = "Подтверждён"
-    IN_DILIVER = "В доставке"
-    COMPLETED = "Завершён"
-    CANCELED = "Отменён"
+    CREATED = "🙋‍♂️ Создан"
+    PAID = "💴 Заказ оплачен"
+    BOUGHT_OUT = "✈️ Выкуплен"
+    AGENT = "👨‍💼 Передан Агенту"
+    CUSTOMS = "🛃 Таможня"
+    MOSCOW_WAREHOUSE = "📦 на складе в Москве"
+    TO_PETERSBURG = "🚚 Едет в Питер"
+    TO_CUSTOMER_CITY = "📨 Едет в город к покупателю"
+    COMPLETED = "🏠 Завершен"
+    CANCELED = "❌ Отменён"
 
 
 class OrderTypeItem(enum.Enum):
@@ -95,7 +99,7 @@ class Order(Base):
     price_cny = Column(Integer, nullable=False, default=0)
     size = Column(Float, nullable=False)
     type_item = Column(Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
+    time_created = Column(DateTime(), server_default=func.now())
 
     user = relationship("User", back_populates="orders")
 
