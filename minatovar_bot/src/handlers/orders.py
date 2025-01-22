@@ -9,7 +9,6 @@ from keyboards import ClientKeyboards, OrderKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.orders import calculate_rub_price
 
-from create_bot import admins
 
 from .messages import (
     MAIN_MENU,
