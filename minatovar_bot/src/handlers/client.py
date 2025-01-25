@@ -32,7 +32,7 @@ start_middleware = StartMiddleware()
 
 
 @client_router.message(Command("start"), flags={"start": True})
-async def start(message: types.Message):
+async def start(message: types.Message, state: FSMContext):
     await bot.send_message(
         message.from_user.id, START, reply_markup=types.ReplyKeyboardRemove()
     )
@@ -41,6 +41,7 @@ async def start(message: types.Message):
         MAIN_MENU,
         reply_markup=ClientKeyboards.main_menu_inline_kb(),
     )
+    await state.clear()
 
 
 @client_router.callback_query(F.data.startswith("close"))
