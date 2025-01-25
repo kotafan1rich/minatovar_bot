@@ -31,20 +31,24 @@ async def calculate_rub_price(
         if type_item == OrderTypeItem.SHOES.value
         else await settings_dal.get_param("cloth_price")
     )
-    user_referrals: list = await referral_dal.get_refferals(id_from=user_id)
-    active_referrals = await get_active_referrals(user_id, user_referrals, db_session)
-
     price_rub = price_cny * current_rate + deliver_price
-    if active_referrals:
-        if price_rub < 10000:
-            active_referrals = min(active_referrals, 5)
-            price_rub *= 1 - active_referrals * 0.1
 
-        elif price_rub < 20000:
-            active_referrals = min(active_referrals, 3)
-            price_rub *= 1 - active_referrals * 0.1
+    if price_rub < 50000:
+        user_referrals: list = await referral_dal.get_refferals(id_from=user_id)
+        active_referrals = await get_active_referrals(
+            user_id, user_referrals, db_session
+        )
 
-        else:
-            active_referrals = min(active_referrals, 4)
-            price_rub *= 1 - active_referrals * 0.05
+        if active_referrals:
+            if price_rub < 10000:
+                active_referrals = min(active_referrals, 5)
+                price_rub *= 1 - active_referrals * 0.1
+
+            elif price_rub < 20000:
+                active_referrals = min(active_referrals, 3)
+                price_rub *= 1 - active_referrals * 0.1
+
+            else:
+                active_referrals = min(active_referrals, 4)
+                price_rub *= 1 - active_referrals * 0.05
     return round(price_rub)
