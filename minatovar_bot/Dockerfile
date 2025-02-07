@@ -23,7 +23,7 @@ rm -rf /var/lib/apt/lists/*
 # Обновляем pip и создаем колеса для зависимостей
 COPY requirements.txt . 
 RUN python3 -m pip install --upgrade pip && \
-    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
 # Финальный этап
 FROM python:3.9-bullseye
