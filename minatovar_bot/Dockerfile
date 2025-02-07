@@ -9,15 +9,15 @@ ENV PYTHONUNBUFFERED=1
 
 # Обновляем пакеты и устанавливаем зависимости
 RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-    gcc \
-    tzdata \
-    libpq-dev \
-    build-essential \
-    libxml2-dev \
-    libxslt-dev && \
-    rm -rf /var/lib/apt/lists/*
+apt-get upgrade -y && \
+apt-get install -y --no-install-recommends \
+gcc \
+tzdata \
+libpq-dev \
+build-essential \
+libxml2-dev \
+libxslt-dev && \
+rm -rf /var/lib/apt/lists/*
 
 
 # Обновляем pip и создаем колеса для зависимостей
