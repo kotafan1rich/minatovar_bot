@@ -30,18 +30,6 @@ fi
 # Выполняем восстановление базы данных
 echo "Начинаем восстановление базы данных из файла $BACKUP_DIR/$BACKUP_FILE..."
 
-
-# Сброс всех таблиц
-echo "Удаляем существующие таблицы..."
-docker exec -e PGPASSWORD=$POSTGRES_PASSWORD -i $CONTAINER_NAME psql -U $POSTGRES_USER -d $POSTGRES_DB -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-
-if [ $? -eq 0 ]; then
-    echo "Все таблицы успешно удалены."
-else
-    echo "Ошибка при удалении таблиц. Проверьте соединение или права доступа."
-    exit 1
-fi
-
 docker exec -e PGPASSWORD=$POSTGRES_PASSWORD -i $CONTAINER_NAME psql -U $POSTGRES_USER -d $POSTGRES_DB < "$BACKUP_DIR/$BACKUP_FILE"
 
 # Проверяем успешность выполнения
