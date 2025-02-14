@@ -17,7 +17,7 @@ clean:
 	docker-compose -f $(DOCKER_COMPOSE_FILE) down --volumes --rmi all
 
 backup:
-	./postgres/create_backup.sh
+	docker exec -it postgres_backup ./create_backup.sh
 restore:
 	./postgres/restore_db.sh
 
