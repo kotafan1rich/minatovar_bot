@@ -14,9 +14,16 @@ logs:
 	docker-compose -f $(DOCKER_COMPOSE_FILE) logs -f
 
 clean:
-	docker-compose -f $(DOCKER_COMPOSE_FILE) down --volumes --rmi al
+	docker-compose -f $(DOCKER_COMPOSE_FILE) down --volumes --rmi all
+
+backup:
+	docker exec -it postgres_backup ./create_backup.sh
+restore:
+	./postgres/restore_db.sh
 
 rebuild: down build up
+
+reup: down up
 
 help:
 	@echo "Доступные цели:"

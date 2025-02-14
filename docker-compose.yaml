@@ -1,23 +1,28 @@
 services:
   bot:
-    container_name: minatovar_bot
+    container_name: bot
     build: ./minatovar_bot
     restart: always
-    volumes:
-      - ./data:/data
     command: ["/app/docker/bot.sh"]
     depends_on:
       - redis
+      - postgres
+    command: ["/app/docker/bot.sh"]
     env_file:
-      - .env
+      - .env-non-dev
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.50"
 
   redis:
-    image: redis:latest
+    image: redis:7.4.1-alpine
     container_name: redis
     ports:
       - "6379:6379"
     volumes:
-      - ./redis_data:/data
+      - redis_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ./redis/users.acl:/usr/local/etc/redis/users.acl
     expose:
@@ -33,6 +38,48 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres:
+    container_name: postgres
+    image: postgres:17-bullseye
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=2007Fj2007
+      - POSTGRES_HOST_AUTH_METHOD=md5
+      - POSTGRES_DB=min_db
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d min_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5431:5432"
+    expose:
+      - 5431
+  
+  backup:
+    build: ./postgres
+    container_name: postgres_backup
+    depends_on:
+      - postgres
+    volumes:
+      - ./postgres/backups:/backups
+      - ./postgres/create_backup.sh:/create_backup.sh
+      - ./postgres/backup.cron:/backup.cron  
+    environment:
+    - CONTAINER_NAME=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=2007Fj2007
+    - POSTGRES_DB=min_db
 
 volumes:
   redis_data:
+  db_data:
+  postgres_backups:
