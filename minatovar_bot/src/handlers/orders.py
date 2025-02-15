@@ -27,6 +27,8 @@ from .messages import (
 
 order_roter = Router(name="order_handler")
 
+ADMIN_GROUP_ID = "-1002174701809"
+
 
 @order_roter.callback_query(F.data.startswith("orders"))
 async def order_menu(call: types.CallbackQuery):
@@ -90,7 +92,6 @@ async def create_order(call: types.CallbackQuery, state: FSMContext):
 async def get_article(messgae: types.Message, state: FSMContext):
     article = messgae.text
     user_id = messgae.from_user.id
-    # if is_valid_link(url):
     await state.update_data(article=article)
     await bot.send_message(
         user_id,
@@ -98,12 +99,6 @@ async def get_article(messgae: types.Message, state: FSMContext):
         reply_markup=OrderKeyboards.get_type_item_inline(),
     )
     await state.set_state(FSMOrder.type_item)
-    # else:
-    #     await bot.send_message(
-    #         user_id,
-    #         UNCORRECT_URL,
-    #         reply_markup=OrderKeyboards.back_to_orders_inline(),
-    #     )
 
 
 @order_roter.callback_query(FSMOrder.type_item, F.data.startswith("type_"))
@@ -156,7 +151,7 @@ async def get_prcie(messgae: types.Message, state: FSMContext):
     await bot.send_message(
         messgae.from_user.id,
         SEND_SIZE,
-        reply_markup=OrderKeyboards.close_inline(),
+        reply_markup=OrderKeyboards.back_to_orders_inline(),
     )
     await state.set_state(FSMOrder.size)
 
@@ -165,7 +160,6 @@ async def get_prcie(messgae: types.Message, state: FSMContext):
 async def get_size(messgae: types.Message, state: FSMContext, db_session: AsyncSession):
     user_id = messgae.from_user.id
     size = messgae.text.replace(",", ".")
-    size = float(size)
     await state.update_data(size=size)
     data = await state.get_data()
     res_price_rub = await calculate_rub_price(
@@ -210,7 +204,6 @@ async def confrim(
         user_id, MAIN_MENU, reply_markup=ClientKeyboards.main_menu_inline_kb()
     )
 
-
     await bot.send_message(
-        chat_id="-1002174701809", text=get_new_order_for_admin(created_order, username)
+        chat_id=ADMIN_GROUP_ID, text=get_new_order_for_admin(created_order, username)
     )

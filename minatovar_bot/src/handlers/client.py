@@ -9,7 +9,7 @@ from fsms import FSMGetPrice
 from keyboards import ClientKeyboards
 from middlewares.middleware import StartMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
-from utils.orders import get_active_referrals
+from utils.orders import calculate_rub_price, get_active_referrals
 
 from .messages import (
     BOT_IS_UNVAILABLE,
@@ -45,7 +45,8 @@ async def start(message: types.Message, state: FSMContext):
 
 
 @client_router.callback_query(F.data.startswith("close"))
-async def close(call: types.CallbackQuery):
+async def close(call: types.CallbackQuery, state: FSMContext):
+    await state.clear()
     await bot.delete_message(
         chat_id=call.from_user.id,
         message_id=call.message.message_id,
@@ -141,8 +142,14 @@ async def send_shoes_price(message: types.Message, state: FSMContext, db_session
     delivery_price = await SettingsDAL(db_session).get_param("shoes_price")
     current_rate = await SettingsDAL(db_session).get_param("current_rate")
     if delivery_price and current_rate:
-        result_price = round(price * current_rate + delivery_price, 2)
-        text = send_price_mes(result_price)
+        res_price_rub = await calculate_rub_price(
+            user_id=user_id,
+            price_cny=price,
+            type_item=OrderTypeItem.SHOES,
+            db_session=db_session,
+        )
+
+        text = send_price_mes(res_price_rub)
         await bot.send_message(user_id, text)
     else:
         await bot.send_message(user_id, BOT_IS_UNVAILABLE)
@@ -161,9 +168,14 @@ async def send_cloth_price(message: types.Message, state: FSMContext, db_session
     delivery_price = await SettingsDAL(db_session).get_param("cloth_price")
     current_rate = await SettingsDAL(db_session).get_param("current_rate")
     if delivery_price and current_rate:
-        result_price = round(price * current_rate + delivery_price, 2)
+        res_price_rub = await calculate_rub_price(
+            user_id=user_id,
+            price_cny=price,
+            type_item=OrderTypeItem.CLOTH,
+            db_session=db_session,
+        )
 
-        text = send_price_mes(result_price)
+        text = send_price_mes(res_price_rub)
         await bot.send_message(user_id, text)
     else:
         await bot.send_message(user_id, BOT_IS_UNVAILABLE)
