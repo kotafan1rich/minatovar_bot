@@ -16,10 +16,10 @@ logs:
 clean:
 	docker-compose -f $(DOCKER_COMPOSE_FILE) down --volumes --rmi all
 
-backup:
+create_backup:
 	docker exec -it postgres_backup ./create_backup.sh
 restore:
-	./postgres/restore_db.sh
+	./backup/restore_db.sh
 
 rebuild: down build up
 

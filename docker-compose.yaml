@@ -64,12 +64,12 @@ services:
       - 5431
   
   backup:
-    build: ./postgres
+    build: ./backup
     container_name: postgres_backup
     depends_on:
       - postgres
     volumes:
-      - ./postgres/backups:/backups
+      - ./backup/backups:/backups
     environment:
     - CONTAINER_NAME=postgres
     - POSTGRES_USER=postgres

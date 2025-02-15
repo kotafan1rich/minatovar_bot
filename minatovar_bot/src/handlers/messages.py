@@ -12,7 +12,7 @@ SEND_PRICE = (
 число без учета скидки Poizon"
 )
 
-TYPE_ITEM = "Обувь/Одежда"
+TYPE_ITEM = "Выберите тип товара"
 
 BAD_FORMAT_ERROR = "Неправильный формат ввода"
 NON_ARGUMENT_ERROR = "Не введён аргумент"
