@@ -97,7 +97,7 @@ class Order(Base):
     addres = Column(String(255), nullable=False)
     price_rub = Column(Float, nullable=False, default=0.0)
     price_cny = Column(Integer, nullable=False, default=0)
-    size = Column(Float, nullable=False)
+    size = Column(String(100), nullable=False)
     type_item = Column(Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False)
     time_created = Column(DateTime(), server_default=func.now())
 
