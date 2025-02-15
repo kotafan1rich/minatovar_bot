@@ -12,6 +12,7 @@ from utils.orders import calculate_rub_price
 
 from .messages import (
     MAIN_MENU,
+    NOT_DIGIT_ERROR,
     SEND_ADDRES,
     SEND_ARTICLE,
     SEND_PRICE,
@@ -146,14 +147,18 @@ async def get_addres(messgae: types.Message, state: FSMContext):
 
 @order_roter.message(FSMOrder.price_cny)
 async def get_prcie(messgae: types.Message, state: FSMContext):
-    price = int(messgae.text)
-    await state.update_data(price_cny=price)
-    await bot.send_message(
-        messgae.from_user.id,
-        SEND_SIZE,
-        reply_markup=OrderKeyboards.back_to_orders_inline(),
-    )
-    await state.set_state(FSMOrder.size)
+    user_id = messgae.from_user.id
+    try:
+        price = int(messgae.text)
+        await state.update_data(price_cny=price)
+        await bot.send_message(
+            user_id,
+            SEND_SIZE,
+            reply_markup=OrderKeyboards.back_to_orders_inline(),
+        )
+        await state.set_state(FSMOrder.size)
+    except ValueError:
+        await bot.send_message(user_id, NOT_DIGIT_ERROR)
 
 
 @order_roter.message(FSMOrder.size)

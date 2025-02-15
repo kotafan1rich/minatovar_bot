@@ -16,6 +16,7 @@ from .messages import (
     HELP,
     MAIN_MENU,
     NO_PROMOS,
+    NOT_DIGIT_ERROR,
     SEND_PRICE,
     START,
     TYPE_ITEM,
@@ -137,53 +138,59 @@ async def set_price_state(
 @client_router.message(FSMGetPrice.shoes_state)
 async def send_shoes_price(message: types.Message, state: FSMContext, db_session):
     user_id = message.from_user.id
-    await state.clear()
-    price = int(message.text)
-    delivery_price = await SettingsDAL(db_session).get_param("shoes_price")
-    current_rate = await SettingsDAL(db_session).get_param("current_rate")
-    if delivery_price and current_rate:
-        res_price_rub = await calculate_rub_price(
-            user_id=user_id,
-            price_cny=price,
-            type_item=OrderTypeItem.SHOES,
-            db_session=db_session,
-        )
+    try:
+        price = int(message.text)
+        delivery_price = await SettingsDAL(db_session).get_param("shoes_price")
+        current_rate = await SettingsDAL(db_session).get_param("current_rate")
+        if delivery_price and current_rate:
+            res_price_rub = await calculate_rub_price(
+                user_id=user_id,
+                price_cny=price,
+                type_item=OrderTypeItem.SHOES,
+                db_session=db_session,
+            )
 
-        text = send_price_mes(res_price_rub)
-        await bot.send_message(user_id, text)
-    else:
-        await bot.send_message(user_id, BOT_IS_UNVAILABLE)
-    await bot.send_message(
-        chat_id=user_id,
-        text=MAIN_MENU,
-        reply_markup=ClientKeyboards.main_menu_inline_kb(),
-    )
+            text = send_price_mes(res_price_rub)
+            await bot.send_message(user_id, text)
+        else:
+            await bot.send_message(user_id, BOT_IS_UNVAILABLE)
+        await bot.send_message(
+            chat_id=user_id,
+            text=MAIN_MENU,
+            reply_markup=ClientKeyboards.main_menu_inline_kb(),
+        )
+        await state.clear()
+    except ValueError:
+        await bot.send_message(user_id, NOT_DIGIT_ERROR)
 
 
 @client_router.message(FSMGetPrice.cloth_state)
 async def send_cloth_price(message: types.Message, state: FSMContext, db_session):
     user_id = message.from_user.id
-    await state.clear()
-    price = int(message.text)
-    delivery_price = await SettingsDAL(db_session).get_param("cloth_price")
-    current_rate = await SettingsDAL(db_session).get_param("current_rate")
-    if delivery_price and current_rate:
-        res_price_rub = await calculate_rub_price(
-            user_id=user_id,
-            price_cny=price,
-            type_item=OrderTypeItem.CLOTH,
-            db_session=db_session,
-        )
+    try:
+        price = int(message.text)
+        delivery_price = await SettingsDAL(db_session).get_param("cloth_price")
+        current_rate = await SettingsDAL(db_session).get_param("current_rate")
+        if delivery_price and current_rate:
+            res_price_rub = await calculate_rub_price(
+                user_id=user_id,
+                price_cny=price,
+                type_item=OrderTypeItem.CLOTH,
+                db_session=db_session,
+            )
 
-        text = send_price_mes(res_price_rub)
-        await bot.send_message(user_id, text)
-    else:
-        await bot.send_message(user_id, BOT_IS_UNVAILABLE)
-    await bot.send_message(
-        chat_id=user_id,
-        text=MAIN_MENU,
-        reply_markup=ClientKeyboards.main_menu_inline_kb(),
-    )
+            text = send_price_mes(res_price_rub)
+            await bot.send_message(user_id, text)
+        else:
+            await bot.send_message(user_id, BOT_IS_UNVAILABLE)
+        await bot.send_message(
+            chat_id=user_id,
+            text=MAIN_MENU,
+            reply_markup=ClientKeyboards.main_menu_inline_kb(),
+        )
+        await state.clear()
+    except ValueError:
+        await bot.send_message(user_id, NOT_DIGIT_ERROR)
 
 
 @client_router.callback_query(F.data == "getrate")
