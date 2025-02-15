@@ -13,7 +13,7 @@ POSTGRES_HOST="postgres"
 POSTGRES_PORT="5432"
 
 # Исключаемые таблицы (через пробел)
-EXCLUDED_TABLES="alembic_version"
+EXCLUDED_TABLES=""
 
 # Формируем параметры исключения
 EXCLUDE_ARGS=""

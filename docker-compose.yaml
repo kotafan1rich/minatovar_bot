@@ -70,8 +70,6 @@ services:
       - postgres
     volumes:
       - ./postgres/backups:/backups
-      - ./postgres/create_backup.sh:/create_backup.sh
-      - ./postgres/backup.cron:/backup.cron  
     environment:
     - CONTAINER_NAME=postgres
     - POSTGRES_USER=postgres
