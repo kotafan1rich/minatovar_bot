@@ -89,6 +89,7 @@ def get_order_for_admin(order: Order, username: str):
 <b>Дата создания:</b> {order.time_created.strftime("%d.%m.%Y %H:%M:%S MSK")}
 """
 
+
 def get_new_order_for_admin(order: Order, username: str):
     return f"""
 <b>!!!НОВЫЙ ЗАКАЗ!!!</b>
@@ -120,7 +121,6 @@ def get_order(order: Order) -> str:
 <b>Адрес:</b> {order.addres}
 <b>Дата создания:</b> {order.time_created.strftime("%d.%m.%Y")}
 """
-
 
 
 def get_promos(promos: List[Promos]):
