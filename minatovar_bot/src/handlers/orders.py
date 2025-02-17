@@ -148,7 +148,7 @@ async def get_addres(messgae: types.Message, state: FSMContext):
 @order_roter.message(FSMOrder.price_cny)
 async def get_prcie(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
-    if message.text.isdigit() and int(message.text) > 0:
+    if  message.text and message.text.isdigit() and int(message.text) > 0:
         price = int(message.text)
         await state.update_data(price_cny=price)
         await bot.send_message(

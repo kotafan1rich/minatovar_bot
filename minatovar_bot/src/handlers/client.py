@@ -138,7 +138,7 @@ async def set_price_state(
 @client_router.message(FSMGetPrice.shoes_state)
 async def send_shoes_price(message: types.Message, state: FSMContext, db_session):
     user_id = message.from_user.id
-    if message.text.isdigit() and int(message.text) > 0:
+    if  message.text and message.text.isdigit() and int(message.text) > 0:
         price = int(message.text)
         delivery_price = await SettingsDAL(db_session).get_param("shoes_price")
         current_rate = await SettingsDAL(db_session).get_param("current_rate")
@@ -167,7 +167,7 @@ async def send_shoes_price(message: types.Message, state: FSMContext, db_session
 @client_router.message(FSMGetPrice.cloth_state)
 async def send_cloth_price(message: types.Message, state: FSMContext, db_session):
     user_id = message.from_user.id
-    if message.text.isdigit() and int(message.text) > 0:
+    if message.text and message.text.isdigit() and int(message.text) > 0:
         price = int(message.text)
         delivery_price = await SettingsDAL(db_session).get_param("cloth_price")
         current_rate = await SettingsDAL(db_session).get_param("current_rate")
