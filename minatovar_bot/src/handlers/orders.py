@@ -146,10 +146,10 @@ async def get_addres(messgae: types.Message, state: FSMContext):
 
 
 @order_roter.message(FSMOrder.price_cny)
-async def get_prcie(messgae: types.Message, state: FSMContext):
-    user_id = messgae.from_user.id
-    try:
-        price = int(messgae.text)
+async def get_prcie(message: types.Message, state: FSMContext):
+    user_id = message.from_user.id
+    if message.text.isdigit() and int(message.text) > 0:
+        price = int(message.text)
         await state.update_data(price_cny=price)
         await bot.send_message(
             user_id,
@@ -157,7 +157,7 @@ async def get_prcie(messgae: types.Message, state: FSMContext):
             reply_markup=OrderKeyboards.back_to_orders_inline(),
         )
         await state.set_state(FSMOrder.size)
-    except ValueError:
+    else:
         await bot.send_message(user_id, NOT_DIGIT_ERROR)
 
 
