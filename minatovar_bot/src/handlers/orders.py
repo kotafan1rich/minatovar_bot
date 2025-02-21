@@ -75,10 +75,19 @@ async def create_order(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
     await call.answer()
     if call.from_user.username:
+        media_group = [
+            types.InputMediaPhoto(
+                media=types.FSInputFile(f"{STATIC_FILES}/article_1.jpg")
+            ),
+            types.InputMediaPhoto(
+                media=types.FSInputFile(f"{STATIC_FILES}/article_2.jpg"),
+            ),
+        ]
+        await bot.send_media_group(user_id, media=media_group)
         await bot.send_message(
             user_id,
             SEND_ARTICLE,
-            reply_markup=OrderKeyboards.close_inline(),
+            reply_markup=OrderKeyboards.back_to_orders_inline(),
         )
         await state.set_state(FSMOrder.article)
     else:

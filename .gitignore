@@ -124,3 +124,4 @@ redis_data/
 ruff.toml
 data/data.json
 backup/backups/*.sql
+.env-non-dev
