@@ -33,20 +33,24 @@ class StartMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any],
     ):
+        data["referrer_id"] = None
         if data.get("handler").flags.get("start"):
             message: Message = event
             user_id = message.from_user.id
             username = message.from_user.username
             db_session: AsyncSession = data["db_session"]
-
             user_dal = UserDAL(db_session)
             referal_dal = ReferralDAL(db_session)
+
             if not await user_dal.user_exists(user_id):
                 await user_dal.add_user(user_id=user_id, username=username)
                 arg = pars_arg(message.text)
-                referral_id = int(arg) if arg else None
-                if referral_id and user_id != referral_id:
-                    await referal_dal.add_referal(id_from=referral_id, id_to=user_id)
+                referrer_id = int(arg) if arg else None
+
+                if referrer_id and user_id != referrer_id:
+                    data["referrer_id"] = referrer_id
+                    await referal_dal.add_referal(id_from=referrer_id, id_to=user_id)
+
         return await handler(event, data)
 
 

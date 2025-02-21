@@ -1,3 +1,4 @@
+from typing import Optional
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -15,11 +16,13 @@ from .messages import (
     BOT_IS_UNVAILABLE,
     HELP,
     MAIN_MENU,
+    NEW_REFERRAL,
     NO_PROMOS,
     NOT_DIGIT_ERROR,
     SEND_PRICE,
     START,
     TYPE_ITEM,
+    U_ARE_REFERRAL,
     WHATS_NEXT,
     count_referrals,
     get_promos,
@@ -33,12 +36,15 @@ start_middleware = StartMiddleware()
 
 
 @client_router.message(Command("start"), flags={"start": True})
-async def start(message: types.Message, state: FSMContext):
+async def start(message: types.Message, state: FSMContext, referrer_id: Optional[int]):
+    user_id = message.from_user.id
+    if referrer_id:
+        await bot.send_message(referrer_id, NEW_REFERRAL)
+        await bot.send_message(user_id, U_ARE_REFERRAL)
+
+    await bot.send_message(user_id, START, reply_markup=types.ReplyKeyboardRemove())
     await bot.send_message(
-        message.from_user.id, START, reply_markup=types.ReplyKeyboardRemove()
-    )
-    await bot.send_message(
-        message.from_user.id,
+        user_id,
         MAIN_MENU,
         reply_markup=ClientKeyboards.main_menu_inline_kb(),
     )
@@ -138,7 +144,7 @@ async def set_price_state(
 @client_router.message(FSMGetPrice.shoes_state)
 async def send_shoes_price(message: types.Message, state: FSMContext, db_session):
     user_id = message.from_user.id
-    if  message.text and message.text.isdigit() and int(message.text) > 0:
+    if message.text and message.text.isdigit() and int(message.text) > 0:
         price = int(message.text)
         delivery_price = await SettingsDAL(db_session).get_param("shoes_price")
         current_rate = await SettingsDAL(db_session).get_param("current_rate")
