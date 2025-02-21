@@ -1,5 +1,6 @@
 services:
   bot:
+
     container_name: bot
     build: ./minatovar_bot
     restart: always
@@ -7,6 +8,8 @@ services:
     depends_on:
       - redis
       - postgres
+    networks:
+      - mina_net
     env_file:
       - .env-non-dev
     deploy:
@@ -18,19 +21,19 @@ services:
   redis:
     image: redis:7.4.1-alpine
     container_name: redis
-    ports:
-      - "6379:6379"
+
     volumes:
       - redis_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ./redis/users.acl:/usr/local/etc/redis/users.acl
-    expose:
-      - 6379
+
     environment:
       - REDIS_PASSWORD=2007Fj2007
       - REDIS_USER=minatovar
       - REDIS_USER_PASSWORD=2007Fj2007
     command: redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl  
+    networks:
+      - mina_net
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "2007Fj2007", "ping"]
       interval: 10s
@@ -52,6 +55,9 @@ services:
       - POSTGRES_DB=min_db
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
 
+    networks:
+      - mina_net
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d min_db"]
       interval: 10s
@@ -70,11 +76,16 @@ services:
       - postgres
     volumes:
       - ./backup/backups:/backups
+    networks:
+      - mina_net
     environment:
     - CONTAINER_NAME=postgres
     - POSTGRES_USER=postgres
     - POSTGRES_PASSWORD=2007Fj2007
     - POSTGRES_DB=min_db
+
+networks:
+  mina_net:
 
 volumes:
   redis_data:
