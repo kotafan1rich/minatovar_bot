@@ -19,7 +19,9 @@ BAD_FORMAT_ERROR = "Неправильный формат ввода"
 NON_ARGUMENT_ERROR = "Не введён аргумент"
 BOT_IS_UNVAILABLE = "Бот в данный момент недоступен. Приносим свои изменения"
 UNCORRECT_URL = "Некорректная ссылка"
-SET_USERNAME = "Установите username и повторите попытку"
+SET_USERNAME = (
+    "Установите username, чтобы могли с вами связаться после оформления закза."
+)
 NO_PROMOS = "Нет акций"
 NOT_DIGIT_ERROR = "Введите целое число"
 
