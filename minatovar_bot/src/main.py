@@ -45,28 +45,26 @@ async def lifespan(app: FastAPI):
         drop_pending_updates=True,
     )
     logging.info(f"Webhook set to {BASE_URL}{WEBHOOK_PATH}")
-    yield  # Приложение работает
-    # Код, выполняющийся при завершении работы приложения
+    yield
+
     await bot.delete_webhook()
     logging.info("Webhook removed")
 
 
-# Инициализация FastAPI с методом жизненного цикла
 app = FastAPI(lifespan=lifespan)
 
 
-# Маршрут для обработки вебхуков
 @app.post(f"{WEBHOOK_PATH}")
 async def webhook(request: Request) -> None:
     update = await request.json()
     update = Update.model_validate(await request.json(), context={"bot": bot})
     await dp.feed_update(bot, update)
 
+
 if __name__ == "__main__":
     logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
     logger = logging.getLogger(__name__)
     uvicorn.run(app, host=HOST, port=PORT)
-
