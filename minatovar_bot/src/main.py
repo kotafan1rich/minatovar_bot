@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import logging
+import asyncio
 from aiogram.types import BotCommand
 from aiogram.types.update import Update
 from fastapi import FastAPI, Request
@@ -13,11 +14,12 @@ from middlewares.middleware import (
     StartMiddleware,
     CallbackDataMiddleware,
 )
-from config import BASE_URL, HOST, PORT, WEBHOOK_PATH
+from config import BASE_URL, HOST, PORT, WEBHOOK_PATH, DEBUG
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+async def on_startapp():
+    await bot.delete_webhook()
+
     await bot.set_my_commands([BotCommand(command="/start", description="Начать")])
 
     params = ("current_rate", "shoes_price", "cloth_price")
@@ -36,6 +38,11 @@ async def lifespan(app: FastAPI):
     dp.include_router(client_router)
     dp.include_router(order_roter)
     dp.include_router(admin_router)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await on_startapp()
 
     await bot.set_webhook(
         url=f"{BASE_URL}{WEBHOOK_PATH}",
@@ -59,10 +66,18 @@ async def webhook(request: Request) -> None:
     await dp.feed_update(bot, update)
 
 
+async def polling():
+    await dp.emit_startup(await on_startapp())
+    await dp.start_polling(bot)
+
+
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
     logger = logging.getLogger(__name__)
-    uvicorn.run(app, host=HOST, port=PORT)
+    if DEBUG:
+        asyncio.run(polling())
+    else:
+        uvicorn.run(app, host=HOST, port=PORT)

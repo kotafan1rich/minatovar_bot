@@ -1,10 +1,11 @@
+from doctest import debug
 import os
 
 from dotenv import load_dotenv
 
 load_dotenv()
-
-TOKEN = os.getenv("TOKEN") if os.getenv("DEBUG") == "False" else os.getenv("TEST_TOKEN")
+DEBUG = os.getenv("DEBUG") == "True"
+TOKEN = os.getenv("TEST_TOKEN") if DEBUG else os.getenv("TOKEN")
 HOST = os.getenv("HOST")
 PORT = int(os.getenv("PORT"))
 WEBHOOK_PATH = '/webhook'
