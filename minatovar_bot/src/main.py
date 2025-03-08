@@ -20,14 +20,12 @@ from config import BASE_URL, HOST, PORT, WEBHOOK_PATH
 async def lifespan(app: FastAPI):
     await bot.set_my_commands([BotCommand(command="/start", description="Начать")])
 
+    params = ("current_rate", "shoes_price", "cloth_price")
     async with async_session() as session:
         settings_dal = SettingsDAL(session)
-        if not await settings_dal.param_exists("current_rate"):
-            await settings_dal.set_param("current_rate", 0.0)
-        if not await settings_dal.param_exists("shoes_price"):
-            await settings_dal.set_param("shoes_price", 0.0)
-        if not await settings_dal.param_exists("cloth_price"):
-            await settings_dal.set_param("cloth_price", 0.0)
+        for param in params:
+            if not await settings_dal.param_exists(param):
+                await settings_dal.set_param(param, 0.0)
 
     dp.update.outer_middleware(DBSessionMiddleware())
     admin_router.callback_query.middleware.register(CallbackDataMiddleware())
