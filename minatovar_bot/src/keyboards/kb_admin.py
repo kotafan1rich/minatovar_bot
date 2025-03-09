@@ -30,7 +30,7 @@ class AdminKeyboards(BaseKeyboards):
     CURRENT_RATE_BOTTON = InlineKeyboardButton(
         text="Курс", callback_data="settings_rate"
     )
-    BACK_TO_ADMIN_MENU = InlineKeyboardButton(text="⬅️", callback_data="adminback")
+    BACK_TO_ADMIN_MENU = InlineKeyboardButton(text="◀️", callback_data="adminback")
 
     @classmethod
     def admin_menu_inline(cls):
@@ -82,7 +82,7 @@ class AdminKeyboards(BaseKeyboards):
             for status in OrderStatus
         ]
         bottons.append(
-            [InlineKeyboardButton(text="Назад", callback_data=f"backorder_{id}")]
+            [InlineKeyboardButton(text="◀️", callback_data=f"backorder_{id}")]
         )
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 
