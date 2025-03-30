@@ -8,7 +8,6 @@ from db.dals import ReferralDAL, SettingsDAL, promosDAL
 from db.models import OrderTypeItem
 from fsms import FSMGetPrice
 from keyboards import ClientKeyboards
-from middlewares.middleware import StartMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.orders import calculate_rub_price, get_active_referrals
 
@@ -32,7 +31,6 @@ from .messages import (
 )
 
 client_router = Router(name="client_router")
-start_middleware = StartMiddleware()
 
 
 @client_router.message(Command("start"), flags={"start": True})

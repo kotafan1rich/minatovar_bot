@@ -1,14 +1,12 @@
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from create_bot import bot
+from create_bot import ADMINS, bot
 from db.dals import OrderDAL, SettingsDAL, UserDAL, promosDAL
 from db.models import OrderStatus
 from fsms import FSMAdmin
 from keyboards import AdminKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from create_bot import admins
 
 from .messages import (
     BAD_FORMAT_ERROR,
@@ -24,11 +22,10 @@ from .messages import (
     get_promos,
 )
 
-
 admin_router = Router(name="admin_router")
 
 
-@admin_router.message(Command("admin"), F.from_user.id.in_(admins))
+@admin_router.message(Command("admin"), F.from_user.id.in_(ADMINS))
 async def admin(message: types.Message):
     await bot.send_message(
         message.from_user.id,
@@ -125,7 +122,7 @@ async def back_to_menu_admin(call: types.CallbackQuery, state: FSMContext):
 
 @admin_router.callback_query(
     F.data.startswith("admin_"),
-    F.from_user.id.in_(admins),
+    F.from_user.id.in_(ADMINS),
 )
 async def get_orders(
     call: types.CallbackQuery, calback_arg: str, db_session: AsyncSession
@@ -231,7 +228,7 @@ async def get_param_to_settings_admin(
     )
 
 
-@admin_router.message(F.from_user.id.in_(admins), FSMAdmin.shoes_price)
+@admin_router.message(F.from_user.id.in_(ADMINS), FSMAdmin.shoes_price)
 async def change_shoes_price(message: types.Message, db_session: AsyncSession):
     try:
         price = await SettingsDAL(db_session).update_param(
@@ -244,7 +241,7 @@ async def change_shoes_price(message: types.Message, db_session: AsyncSession):
         await bot.send_message(message.from_user.id, BAD_FORMAT_ERROR)
 
 
-@admin_router.message(F.from_user.id.in_(admins), FSMAdmin.cloth_price)
+@admin_router.message(F.from_user.id.in_(ADMINS), FSMAdmin.cloth_price)
 async def change_cloth_price(message: types.Message, db_session: AsyncSession):
     try:
         price = await SettingsDAL(db_session).update_param(
@@ -257,7 +254,7 @@ async def change_cloth_price(message: types.Message, db_session: AsyncSession):
         await bot.send_message(message.from_user.id, BAD_FORMAT_ERROR)
 
 
-@admin_router.message(F.from_user.id.in_(admins), FSMAdmin.current_rate)
+@admin_router.message(F.from_user.id.in_(ADMINS), FSMAdmin.current_rate)
 async def change_current_rate(message: types.Message, db_session: AsyncSession):
     try:
         rate = await SettingsDAL(db_session).update_param(

@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 import uvicorn
 from create_bot import bot, dp
 from db.dals import SettingsDAL
-from handlers import admin_router, client_router, order_roter
+from handlers import admin_router, client_router, order_roter, error_router
 from db.session import async_session
 from middlewares.middleware import (
     DBSessionMiddleware,
@@ -35,6 +35,7 @@ async def on_startapp():
     client_router.message.middleware.register(StartMiddleware())
     client_router.callback_query.middleware.register(CallbackDataMiddleware())
 
+    dp.include_router(error_router)
     dp.include_router(client_router)
     dp.include_router(order_roter)
     dp.include_router(admin_router)
@@ -72,11 +73,6 @@ async def polling():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-    logger = logging.getLogger(__name__)
     if DEBUG:
         asyncio.run(polling())
     else:
