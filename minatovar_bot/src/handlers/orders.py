@@ -33,22 +33,16 @@ ADMIN_GROUP_ID = "-1002174701809"
 
 @order_roter.callback_query(F.data.startswith("orders"))
 async def order_menu(call: types.CallbackQuery):
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=WHATS_NEXT,
-        reply_markup=OrderKeyboards.order_menu_inline(),
+    await call.message.edit_text(
+        text=WHATS_NEXT, reply_markup=OrderKeyboards.order_menu_inline()
     )
 
 
 @order_roter.callback_query(F.data == "backtoorders")
 async def back_to_orders(call: types.CallbackQuery, state: FSMContext):
     await state.clear()
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=WHATS_NEXT,
-        reply_markup=OrderKeyboards.order_menu_inline(),
+    await call.message.edit_text(
+        text=WHATS_NEXT, reply_markup=OrderKeyboards.order_menu_inline()
     )
 
 
@@ -62,11 +56,8 @@ async def get_my_orders(call: types.CallbackQuery, db_session: AsyncSession):
         for order in orders:
             await bot.send_message(user_id, get_order(order))
     else:
-        await bot.edit_message_text(
-            chat_id=user_id,
-            message_id=call.message.message_id,
-            text=USERS_NO_ORDERS,
-            reply_markup=OrderKeyboards.order_menu_inline(),
+        await call.message.edit_text(
+            text=USERS_NO_ORDERS, reply_markup=OrderKeyboards.order_menu_inline()
         )
 
 
@@ -116,11 +107,8 @@ async def get_type_item(call: types.CallbackQuery, calback_arg: str, state: FSMC
     await state.update_data(type_item=calback_arg)
     await state.set_state(FSMOrder.addres)
     await call.answer()
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=SEND_ADDRES,
-        reply_markup=OrderKeyboards.back_to_orders_inline(),
+    await call.message.edit_text(
+        text=SEND_ADDRES, reply_markup=OrderKeyboards.back_to_orders_inline()
     )
 
 
@@ -208,11 +196,7 @@ async def confrim(
     created_order = await order_dal.add_order(user_id=user_id, **data)
 
     await call.answer()
-    await bot.edit_message_text(
-        chat_id=user_id,
-        message_id=call.message.message_id,
-        text=get_order(created_order),
-    )
+    await call.message.edit_text(get_order(created_order))
     await state.clear()
     await bot.send_message(
         user_id, MAIN_MENU, reply_markup=ClientKeyboards.main_menu_inline_kb()

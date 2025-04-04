@@ -36,11 +36,8 @@ async def admin(message: types.Message):
 
 @admin_router.callback_query(F.data == "promosadmin")
 async def promos_menu(call: types.CallbackQuery):
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=WHATS_NEXT,
-        reply_markup=AdminKeyboards.admin_promos_menu(),
+    await call.message.edit_text(
+        text=WHATS_NEXT, reply_markup=AdminKeyboards.admin_promos_menu()
     )
 
 
@@ -79,9 +76,7 @@ async def add_promo_admin(call: types.CallbackQuery, state: FSMContext):
 
 @admin_router.callback_query(F.data == "changesettings")
 async def change_settings_admin(call: types.CallbackQuery):
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
+    await call.message.edit_text(
         text=WHAT_CHANGE_QUSTION,
         reply_markup=AdminKeyboards.change_settings_admin_inline(),
     )
@@ -103,20 +98,15 @@ async def remove_promo(
 ):
     promo_dal = promosDAL(db_session)
     await promo_dal.delete_promo(int(calback_arg))
-    await bot.delete_message(
-        chat_id=call.from_user.id, message_id=call.message.message_id
-    )
+    await call.message.delete()
 
 
 @admin_router.callback_query(F.data == "adminback")
 async def back_to_menu_admin(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
     await state.clear()
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=SEND_COMMAND,
-        reply_markup=AdminKeyboards.admin_menu_inline(),
+    await call.message.edit_text(
+        text=SEND_COMMAND, reply_markup=AdminKeyboards.admin_menu_inline()
     )
 
 
@@ -155,10 +145,8 @@ async def get_orders(
 
 @admin_router.callback_query(F.data.startswith("status_"))
 async def get_order_status(call: types.CallbackQuery, calback_arg: str):
-    await bot.edit_message_reply_markup(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        reply_markup=AdminKeyboards.get_status_order_inline(int(calback_arg)),
+    await call.message.edit_reply_markup(
+        reply_markup=AdminKeyboards.get_status_order_inline(int(calback_arg))
     )
 
 
@@ -166,7 +154,6 @@ async def get_order_status(call: types.CallbackQuery, calback_arg: str):
 async def change_order_status(
     call: types.CallbackQuery, calback_arg: str, db_session: AsyncSession
 ):
-    user_id = call.from_user.id
     split_arg = calback_arg.split("_")
     status = split_arg[0]
     order_id = int(split_arg[1])
@@ -181,9 +168,7 @@ async def change_order_status(
     user = await user_dal.get_user(changed_order.user_id)
     username = user.username
 
-    await bot.edit_message_text(
-        chat_id=user_id,
-        message_id=call.message.message_id,
+    await call.message.edit_text(
         text=get_order_for_admin(changed_order, username),
         reply_markup=AdminKeyboards.get_info_order_inline(changed_order.id),
     )
@@ -195,17 +180,13 @@ async def remove_order(
 ):
     order_dal = OrderDAL(db_session)
     await order_dal.delete_order(int(calback_arg))
-    await bot.delete_message(
-        chat_id=call.from_user.id, message_id=call.message.message_id
-    )
+    await call.message.delete()
 
 
 @admin_router.callback_query(F.data.startswith("backorder_"))
 async def back_order(call: types.CallbackQuery, calback_arg: str):
-    await bot.edit_message_reply_markup(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        reply_markup=AdminKeyboards.get_info_order_inline(int(calback_arg)),
+    await call.message.edit_reply_markup(
+        reply_markup=AdminKeyboards.get_info_order_inline(int(calback_arg))
     )
 
 
@@ -220,11 +201,9 @@ async def get_param_to_settings_admin(
         await state.set_state(FSMAdmin.cloth_price)
     else:
         await state.set_state(FSMAdmin.current_rate)
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=SEND_NEW_VALUE,
-        reply_markup=AdminKeyboards.back_to_admin_menu_inline(),
+
+    await call.message.edit_text(
+        text=SEND_NEW_VALUE, reply_markup=AdminKeyboards.back_to_admin_menu_inline()
     )
 
 

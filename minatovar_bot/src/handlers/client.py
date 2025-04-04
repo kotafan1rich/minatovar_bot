@@ -52,19 +52,13 @@ async def start(message: types.Message, state: FSMContext, referrer_id: Optional
 @client_router.callback_query(F.data.startswith("close"))
 async def close(call: types.CallbackQuery, state: FSMContext):
     await state.clear()
-    await bot.delete_message(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-    )
+    await call.message.delete()
 
 
 @client_router.callback_query(F.data == "back")
 async def back_to_menu(call: types.CallbackQuery):
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=MAIN_MENU,
-        reply_markup=ClientKeyboards.main_menu_inline_kb(),
+    await call.message.edit_text(
+        text=MAIN_MENU, reply_markup=ClientKeyboards.main_menu_inline_kb()
     )
 
 
@@ -98,11 +92,8 @@ async def promos(call: types.CallbackQuery, db_session: AsyncSession):
 @client_router.callback_query(F.data == "getprice")
 async def get_type(call: types.CallbackQuery, state: FSMContext):
     await state.set_state(FSMGetPrice.get_type_state)
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
-        text=TYPE_ITEM,
-        reply_markup=ClientKeyboards.get_type_item_inline(),
+    await call.message.edit_text(
+        text=TYPE_ITEM, reply_markup=ClientKeyboards.get_type_item_inline()
     )
 
 
@@ -110,9 +101,7 @@ async def get_type(call: types.CallbackQuery, state: FSMContext):
 async def set_price_state(
     call: types.CallbackQuery, state: FSMContext, calback_arg: str
 ):
-    await bot.delete_message(
-        chat_id=call.from_user.id, message_id=call.message.message_id
-    )
+    await call.message.delete()
     if calback_arg == OrderTypeItem.SHOES.value:
         media_group = [
             types.InputMediaPhoto(
@@ -227,9 +216,7 @@ async def referral_menu(call: types.CallbackQuery):
 @client_router.callback_query(F.data == "referralurl")
 async def get_refferal_link(call: types.CallbackQuery):
     info_bot = await bot.get_me()
-    await bot.edit_message_text(
-        chat_id=call.from_user.id,
-        message_id=call.message.message_id,
+    await call.message.edit_text(
         text=refferal_link(bot_username=info_bot.username, user_id=call.from_user.id),
         reply_markup=ClientKeyboards.close_inline(),
     )
@@ -244,9 +231,7 @@ async def get_my_referrals(call: types.CallbackQuery, db_session: AsyncSession):
     actives = await get_active_referrals(
         user_id=user_id, user_referrals=referrals, db_session=db_session
     )
-    await bot.edit_message_text(
-        chat_id=user_id,
-        message_id=call.message.message_id,
+    await call.message.edit_text(
         text=count_referrals(referrals, actives),
         reply_markup=ClientKeyboards.close_inline(),
     )
