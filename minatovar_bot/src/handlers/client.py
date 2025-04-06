@@ -92,8 +92,11 @@ async def promos(call: types.CallbackQuery, db_session: AsyncSession):
 @client_router.callback_query(F.data == "getprice")
 async def get_type(call: types.CallbackQuery, state: FSMContext):
     await state.set_state(FSMGetPrice.get_type_state)
-    await call.message.edit_text(
-        text=TYPE_ITEM, reply_markup=ClientKeyboards.get_type_item_inline()
+    await call.answer()
+    await bot.send_message(
+        chat_id=call.from_user.id,
+        text=TYPE_ITEM,
+        reply_markup=ClientKeyboards.get_type_item_inline(),
     )
 
 

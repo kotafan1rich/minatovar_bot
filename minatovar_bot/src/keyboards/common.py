@@ -19,5 +19,5 @@ class BaseKeyboards:
 
     @classmethod
     def get_type_item_inline(cls):
-        bottons = [[cls.GET_SHOES_BOTTON, cls.GET_CLOTH_BOTTON], [cls.BACK_BOTTON]]
+        bottons = [[cls.GET_SHOES_BOTTON, cls.GET_CLOTH_BOTTON], [cls.CLOSE_BOTTON]]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
