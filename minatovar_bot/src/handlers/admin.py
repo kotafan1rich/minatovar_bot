@@ -1,12 +1,14 @@
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from create_bot import ADMINS, bot
+from create_bot import bot
 from db.dals import OrderDAL, SettingsDAL, UserDAL, promosDAL
 from db.models import OrderStatus
 from fsms import FSMAdmin
 from keyboards import AdminKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from config import ADMINS
 
 from .messages import (
     BAD_FORMAT_ERROR,

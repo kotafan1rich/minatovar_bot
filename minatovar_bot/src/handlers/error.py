@@ -1,8 +1,9 @@
 import traceback
 from aiogram import Router
 from aiogram.types import ErrorEvent
+from config import LOG_ADMIN
 from utils.logger import logger
-from create_bot import bot, LOG_ADMIN
+from create_bot import bot
 from aiogram.exceptions import TelegramAPIError
 
 
