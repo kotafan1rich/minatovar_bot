@@ -1,12 +1,13 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-from config import STATIC_FILES
+from config import ADMIN_GROUP_ID, STATIC_FILES
 from create_bot import bot
 from db.dals import OrderDAL, UserDAL
 from db.models import Order, OrderTypeItem
 from fsms import FSMOrder
 from keyboards import ClientKeyboards, OrderKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
+from utils.meida import get_media_group_cloth, get_media_group_shoes
 from utils.orders import calculate_rub_price
 
 
@@ -15,7 +16,6 @@ from .messages import (
     NOT_DIGIT_ERROR,
     SEND_ADDRES,
     SEND_ARTICLE,
-    SEND_PRICE,
     SEND_SIZE,
     SET_USERNAME,
     TYPE_ITEM,
@@ -28,7 +28,7 @@ from .messages import (
 
 order_roter = Router(name="order_handler")
 
-ADMIN_GROUP_ID = "-1002174701809"
+
 
 
 @order_roter.callback_query(F.data.startswith("orders"))
@@ -119,25 +119,9 @@ async def get_addres(messgae: types.Message, state: FSMContext):
     data = await state.get_data()
     type_item = data["type_item"]
     if type_item == OrderTypeItem.SHOES.value:
-        media_group = [
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price_2.jpg")
-            ),
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price.jpg"),
-                caption=SEND_PRICE,
-            ),
-        ]
+        media_group = get_media_group_shoes()
     else:
-        media_group = [
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price_2.jpg")
-            ),
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price.jpg"),
-                caption=SEND_PRICE,
-            ),
-        ]
+        media_group = get_media_group_cloth()
     await bot.send_media_group(messgae.from_user.id, media=media_group)
     await state.set_state(FSMOrder.price_cny)
 

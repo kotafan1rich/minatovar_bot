@@ -2,13 +2,13 @@ from typing import Optional
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from config import STATIC_FILES
 from create_bot import bot
 from db.dals import ReferralDAL, SettingsDAL, promosDAL
 from db.models import OrderTypeItem
 from fsms import FSMGetPrice
 from keyboards import ClientKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
+from utils.meida import get_media_group_cloth, get_media_group_shoes
 from utils.orders import calculate_rub_price, get_active_referrals
 
 from .messages import (
@@ -18,7 +18,6 @@ from .messages import (
     NEW_REFERRAL,
     NO_PROMOS,
     NOT_DIGIT_ERROR,
-    SEND_PRICE,
     START,
     TYPE_ITEM,
     U_ARE_REFERRAL,
@@ -106,26 +105,10 @@ async def set_price_state(
 ):
     await call.message.delete()
     if calback_arg == OrderTypeItem.SHOES.value:
-        media_group = [
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price_2.jpg")
-            ),
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/shoes_price.jpg"),
-                caption=SEND_PRICE,
-            ),
-        ]
+        media_group = get_media_group_shoes()
         await state.set_state(FSMGetPrice.shoes_state)
     else:
-        media_group = [
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price_2.jpg")
-            ),
-            types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/cloth_price.jpg"),
-                caption=SEND_PRICE,
-            ),
-        ]
+        media_group = get_media_group_cloth()
         await state.set_state(FSMGetPrice.cloth_state)
     await call.answer()
     await bot.send_media_group(call.from_user.id, media=media_group)
