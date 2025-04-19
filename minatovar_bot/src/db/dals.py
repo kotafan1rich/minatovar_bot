@@ -160,7 +160,7 @@ class OrderDAL(BaseDAL):
             return id
 
 
-class promosDAL(BaseDAL):
+class PromosDAL(BaseDAL):
     @cached(key_builder=lambda db_session: build_key("promo"))
     async def get_all_promos(self):
         async with self.db_session.begin():

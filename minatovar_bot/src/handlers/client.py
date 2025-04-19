@@ -1,9 +1,10 @@
 from typing import Optional
+
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from create_bot import bot
-from db.dals import ReferralDAL, SettingsDAL, promosDAL
+from db.dals import PromosDAL, ReferralDAL, SettingsDAL
 from db.models import OrderTypeItem
 from fsms import FSMGetPrice
 from keyboards import ClientKeyboards
@@ -72,7 +73,7 @@ async def help(call: types.CallbackQuery):
 @client_router.callback_query(F.data == "promosclient")
 async def promos(call: types.CallbackQuery, db_session: AsyncSession):
     await call.answer()
-    promos_dal = promosDAL(db_session)
+    promos_dal = PromosDAL(db_session)
     all_promos = await promos_dal.get_all_promos()
     if all_promos:
         await bot.send_message(

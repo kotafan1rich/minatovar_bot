@@ -1,14 +1,13 @@
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
+from config import ADMINS
 from create_bot import bot
-from db.dals import OrderDAL, SettingsDAL, UserDAL, promosDAL
+from db.dals import OrderDAL, PromosDAL, SettingsDAL, UserDAL
 from db.models import OrderStatus
 from fsms import FSMAdmin
 from keyboards import AdminKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from config import ADMINS
 
 from .messages import (
     BAD_FORMAT_ERROR,
@@ -45,7 +44,7 @@ async def promos_menu(call: types.CallbackQuery):
 
 @admin_router.callback_query(F.data == "allpromosadmin")
 async def get_all_promos(call: types.CallbackQuery, db_session: AsyncSession):
-    promo_dal = promosDAL(db_session)
+    promo_dal = PromosDAL(db_session)
     all_promos = await promo_dal.get_all_promos()
     if all_promos:
         for promo in all_promos:
@@ -88,7 +87,7 @@ async def change_settings_admin(call: types.CallbackQuery):
 async def get_description_admin(
     message: types.Message, state: FSMContext, db_session: AsyncSession
 ):
-    promo_dal = promosDAL(db_session)
+    promo_dal = PromosDAL(db_session)
     new_promo = await promo_dal.add_promo(message.text)
     await bot.send_message(message.from_user.id, get_promos([new_promo]))
     await state.clear()
@@ -98,7 +97,7 @@ async def get_description_admin(
 async def remove_promo(
     call: types.CallbackQuery, calback_arg: str, db_session: AsyncSession
 ):
-    promo_dal = promosDAL(db_session)
+    promo_dal = PromosDAL(db_session)
     await promo_dal.delete_promo(int(calback_arg))
     await call.message.delete()
 
