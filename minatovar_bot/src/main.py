@@ -4,6 +4,8 @@ import asyncio
 from aiogram.types import BotCommand
 from aiogram.types.update import Update
 from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from create_bot import bot, dp
 from db.dals import SettingsDAL
@@ -14,7 +16,7 @@ from middlewares.middleware import (
     StartMiddleware,
     CallbackDataMiddleware,
 )
-from config import BASE_URL, HOST, PORT, WEBHOOK_PATH, DEBUG
+from config import BASE_URL, HOST, PORT, STATIC_FILES, TEMPLATE_DIR, WEBHOOK_PATH, DEBUG
 
 
 async def on_startapp():
@@ -58,6 +60,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory=STATIC_FILES), name="static")
+templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
 
 @app.post(f"{WEBHOOK_PATH}")
@@ -65,6 +69,11 @@ async def webhook(request: Request) -> None:
     update = await request.json()
     update = Update.model_validate(await request.json(), context={"bot": bot})
     await dp.feed_update(bot, update)
+
+
+@app.get("/")
+async def index(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html")
 
 
 async def polling():

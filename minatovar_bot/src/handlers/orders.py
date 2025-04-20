@@ -1,6 +1,6 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-from config import ADMIN_GROUP_ID, STATIC_FILES
+from config import ADMIN_GROUP_ID, MEDIA_FILES
 from create_bot import bot
 from db.dals import OrderDAL, UserDAL
 from db.models import Order, OrderTypeItem
@@ -9,7 +9,6 @@ from keyboards import ClientKeyboards, OrderKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.meida import get_media_group_cloth, get_media_group_shoes
 from utils.orders import calculate_rub_price
-
 
 from .messages import (
     MAIN_MENU,
@@ -27,8 +26,6 @@ from .messages import (
 )
 
 order_roter = Router(name="order_handler")
-
-
 
 
 @order_roter.callback_query(F.data.startswith("orders"))
@@ -68,10 +65,10 @@ async def create_order(call: types.CallbackQuery, state: FSMContext):
     if call.from_user.username:
         media_group = [
             types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/article_1.jpg")
+                media=types.FSInputFile(f"{MEDIA_FILES}/article_1.jpg")
             ),
             types.InputMediaPhoto(
-                media=types.FSInputFile(f"{STATIC_FILES}/article_2.jpg"),
+                media=types.FSInputFile(f"{MEDIA_FILES}/article_2.jpg"),
             ),
         ]
         await bot.send_media_group(user_id, media=media_group)
