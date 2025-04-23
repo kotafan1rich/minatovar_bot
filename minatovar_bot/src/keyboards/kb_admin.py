@@ -52,37 +52,48 @@ class AdminKeyboards(BaseKeyboards):
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 
     @classmethod
-    def get_info_promo_inline(cls, id: int):
+    def get_info_promo_inline(cls, promo_id: int):
         REMOVE_BOTTON = InlineKeyboardButton(
-            text="Удалить акцию", callback_data=f"removepromo_{id}"
+            text="Удалить акцию", callback_data=f"removepromo_{promo_id}"
         )
         bottons = [[REMOVE_BOTTON]]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 
     @classmethod
-    def get_info_order_inline(cls, id: int):
+    def get_info_order_inline(cls, order_id: int):
         CHANGE_STATUS_BOTTON = InlineKeyboardButton(
-            text="Изменить статус", callback_data=f"status_{id}"
+            text="Изменить статус", callback_data=f"status_{order_id}"
         )
         REMOVE_BOTTON = InlineKeyboardButton(
-            text="Удалить заказ", callback_data=f"removeorder_{id}"
+            text="Удалить заказ", callback_data=f"removeorder_{order_id}"
         )
         bottons = [[CHANGE_STATUS_BOTTON], [REMOVE_BOTTON]]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 
     @classmethod
-    def get_status_order_inline(cls, id: int):
+    def get_confrim_delete_order_inline(cls, order_id: int):
+        CONFRIM_DELETE_BOTTON = InlineKeyboardButton(
+            text="❗Да, удалить❗", callback_data=f"confrimremoveorder_{order_id}"
+        )
+        BACK_TO_ORDER_BOTTON = InlineKeyboardButton(
+            text="◀️", callback_data=f"backorder_{order_id}"
+        )
+        bottons = [[CONFRIM_DELETE_BOTTON], [BACK_TO_ORDER_BOTTON]]
+        return InlineKeyboardMarkup(inline_keyboard=bottons)
+
+    @classmethod
+    def get_status_order_inline(cls, order_id: int):
         bottons = [
             [
                 InlineKeyboardButton(
                     text=f"{status.value}",
-                    callback_data=f"chstatus_{status.value}_{id}",
+                    callback_data=f"chstatus_{status.value}_{order_id}",
                 )
             ]
             for status in OrderStatus
         ]
         bottons.append(
-            [InlineKeyboardButton(text="◀️", callback_data=f"backorder_{id}")]
+            [InlineKeyboardButton(text="◀️", callback_data=f"backorder_{order_id}")]
         )
         return InlineKeyboardMarkup(inline_keyboard=bottons)
 

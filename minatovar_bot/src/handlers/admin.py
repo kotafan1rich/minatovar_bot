@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .messages import (
     BAD_FORMAT_ERROR,
+    CONFRIM_DELETE,
     NO_ORDERS,
     NO_PROMOS,
     NON_ARGUMENT_ERROR,
@@ -177,6 +178,15 @@ async def change_order_status(
 
 @admin_router.callback_query(F.data.startswith("removeorder_"))
 async def remove_order(
+    call: types.CallbackQuery, calback_arg: str, db_session: AsyncSession
+):
+    await call.message.edit_reply_markup(
+        reply_markup=AdminKeyboards.get_confrim_delete_order_inline(int(calback_arg)),
+    )
+
+
+@admin_router.callback_query(F.data.startswith("confrimremoveorder_"))
+async def confrim_remove_order(
     call: types.CallbackQuery, calback_arg: str, db_session: AsyncSession
 ):
     order_dal = OrderDAL(db_session)
