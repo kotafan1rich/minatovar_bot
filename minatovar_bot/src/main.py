@@ -82,7 +82,7 @@ async def verify_webhook_token(
     return True
 
 
-@app.post(f"{WEBHOOK_PATH}")
+@app.post(f"{WEBHOOK_PATH}", include_in_schema=False)
 async def webhook(
     request: Request, is_valid_token: bool = Depends(verify_webhook_token)
 ) -> None:
@@ -91,7 +91,7 @@ async def webhook(
     await dp.feed_update(bot, update)
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def index(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
 
