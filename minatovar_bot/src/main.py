@@ -3,7 +3,7 @@ import logging
 import asyncio
 from aiogram.types import BotCommand
 from aiogram.types.update import Update
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Header, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -16,7 +16,16 @@ from middlewares.middleware import (
     StartMiddleware,
     CallbackDataMiddleware,
 )
-from config import BASE_URL, HOST, PORT, STATIC_FILES, TEMPLATE_DIR, WEBHOOK_PATH, DEBUG
+from config import (
+    BASE_URL,
+    HOST,
+    PORT,
+    STATIC_FILES,
+    TEMPLATE_DIR,
+    WEBHOOK_PATH,
+    DEBUG,
+    SECRET_KEY,
+)
 
 
 async def on_startapp():
@@ -49,6 +58,7 @@ async def lifespan(app: FastAPI):
 
     await bot.set_webhook(
         url=f"{BASE_URL}{WEBHOOK_PATH}",
+        secret_token=SECRET_KEY,
         allowed_updates=dp.resolve_used_update_types(),
         drop_pending_updates=True,
     )
@@ -64,10 +74,20 @@ app.mount("/static", StaticFiles(directory=STATIC_FILES), name="static")
 templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
 
+async def verify_webhook_token(
+    x_telegram_token: str = Header(..., alias="X-Telegram-Bot-Api-Secret-Token"),
+):
+    if x_telegram_token != SECRET_KEY:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return True
+
+
 @app.post(f"{WEBHOOK_PATH}")
-async def webhook(request: Request) -> None:
+async def webhook(
+    request: Request, is_valid_token: bool = Depends(verify_webhook_token)
+) -> None:
     update = await request.json()
-    update = Update.model_validate(await request.json(), context={"bot": bot})
+    update = Update.model_validate(update, context={"bot": bot})
     await dp.feed_update(bot, update)
 
 
