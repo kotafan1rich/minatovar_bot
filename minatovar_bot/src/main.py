@@ -69,7 +69,7 @@ async def lifespan(app: FastAPI):
     logging.info("Webhook removed")
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(title="MinatovarAPI", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC_FILES), name="static")
 templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
