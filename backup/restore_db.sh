@@ -3,9 +3,9 @@
 # Параметры
 CONTAINER_NAME="postgres"          # Название контейнера из docker-compose.yml
 BACKUP_DIR="./backup/backups"      # Папка с бэкапами
-POSTGRES_USER="postgres"           # Имя пользователя PostgreSQL
 POSTGRES_DB="min_db"               # Имя базы данных
-POSTGRES_PASSWORD="2007Fj2007"     # Пароль пользователя
+POSTGRES_USER="minatovar"
+POSTGRES_PASSWORD="minatovarshop"    # Пароль пользователя
 
 # Проверяем наличие папки с бэкапами
 if [ ! -d "$BACKUP_DIR" ]; then

@@ -6,8 +6,8 @@ TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 BACKUP_FILE="$BACKUP_DIR/db_backup_$TIMESTAMP.sql"
 
 # Подключение
-POSTGRES_USER="postgres"
-POSTGRES_PASSWORD="2007Fj2007"
+POSTGRES_USER="minatovar"
+POSTGRES_PASSWORD="minatovarshop"
 POSTGRES_DB="min_db"
 POSTGRES_HOST="postgres"
 POSTGRES_PORT="5432"
