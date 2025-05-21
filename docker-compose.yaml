@@ -49,13 +49,13 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-      - ./postgres/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
       - ./postgres/init-user-db.sql:/docker-entrypoint-initdb.d/init-user-db.sql
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=2007Fj2007
       - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    command: postgres -c hba_file=/etc/postgresql/pg_hba.conf -c config_file=/etc/postgresql/postgresql.conf 
 
     networks:
       - mina_net
