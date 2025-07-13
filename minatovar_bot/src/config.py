@@ -1,36 +1,60 @@
+import logging
 import os
 
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
-DEBUG = os.getenv("DEBUG") == "True"
-TOKEN = os.getenv("TEST_TOKEN") if DEBUG else os.getenv("TOKEN")
-HOST = os.getenv("HOST")
-PORT = int(os.getenv("PORT"))
-WEBHOOK_PATH = '/webhook'
-BASE_URL = os.getenv("BASE_URL")
 
-REDIS_PORT = os.getenv("REDIS_PORT")
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_DB = os.getenv("REDIS_DB")
-REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
-REDIS_USER = os.getenv("REDIS_USER")
+class Settings(BaseSettings):
+    """Application settings"""
+    DEBUG: bool
+    TOKEN: str
+    HOST: str
+    PORT: int
+    WEBHOOK_PATH: str = '/webhook'
+    BASE_URL: str
 
-DATA_FILE = os.getenv("DATA_FILE")
-STATIC_FILES = os.getenv("STATIC_FILES")
-MEDIA_FILES = f"{STATIC_FILES}/media"
-TEMPLATE_DIR = os.getenv("TEMPLATE_DIR")
+    REDIS_PORT: int
+    REDIS_HOST: str
+    REDIS_DB: int
+    REDIS_PASSWORD: str
+    REDIS_USER: str
 
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_NAME = os.getenv("POSTGRES_NAME")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST")
-SECRET_KEY = os.getenv("SECRET_KEY")
+    STATIC_FILES: str
+    TEMPLATE_DIR: str
 
-ADMIN_GROUP_ID = os.getenv("ADMIN_GROUP_ID")
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_NAME: str
+    POSTGRES_PORT: int
+    POSTGRES_HOST: str
+    SECRET_KEY: str
+
+    ADMIN_GROUP_ID: int
+
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
+    )
+
+
+settings = Settings()
+
 ADMINS = (1019030670, 1324716819, 1423930901)
 LOG_ADMIN = 1324716819
 
-REAL_DATABASE_URL = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}"
-ALEMBIC_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}"
+def get_media_files() -> str:
+    """Returns the path to the media files directory."""
+    return f"{settings.STATIC_FILES}/media"
+
+def get_postgres_url() -> str:
+    """Returns the PostgreSQL database URL for async operations."""
+    return f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_NAME}"
+
+
+def get_alembic_db_url() -> str:
+    """Returns the PostgreSQL database URL for Alembic migrations."""
+    return f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_NAME}"
+
+
+def get_redis_url() -> str:
+    """Returns the Redis database URL."""
+    return f"redis://{settings.REDIS_USER}:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"

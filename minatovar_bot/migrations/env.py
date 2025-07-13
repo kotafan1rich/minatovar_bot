@@ -2,7 +2,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
-from src.config import ALEMBIC_DATABASE_URL
+from src.config import get_alembic_db_url
 from src.db.models import Base
 
 # this is the Alembic Config object, which provides
@@ -26,7 +26,8 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-config.set_main_option('sqlalchemy.url', ALEMBIC_DATABASE_URL)
+
+config.set_main_option("sqlalchemy.url", get_alembic_db_url())
 
 
 def run_migrations_offline() -> None:
@@ -65,23 +66,19 @@ def run_migrations_online() -> None:
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-    
-    
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            compare_type=True,               # Сравнивать типы столбцов
-            compare_server_default=True      # Сравнивать значения по умолчанию
+            compare_type=True,  # Сравнивать типы столбцов
+            compare_server_default=True,  # Сравнивать значения по умолчанию
         )
 
         with context.begin_transaction():
             context.run_migrations()
-    
+
 
 if context.is_offline_mode():
     run_migrations_offline()

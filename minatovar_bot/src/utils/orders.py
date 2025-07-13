@@ -1,7 +1,7 @@
 import re
 
-from db.dals import OrderDAL, ReferralDAL, SettingsDAL
-from db.models import OrderTypeItem
+from src.db.dals import OrderDAL, ReferralDAL, SettingsDAL
+from src.db.models import OrderTypeItem
 
 
 def is_valid_link(link: str) -> bool:

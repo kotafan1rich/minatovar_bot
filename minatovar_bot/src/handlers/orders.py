@@ -1,16 +1,12 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-from config import ADMIN_GROUP_ID, MEDIA_FILES
-from create_bot import bot
-from db.dals import OrderDAL, UserDAL
-from db.models import Order, OrderTypeItem
-from fsms import FSMOrder
-from keyboards import ClientKeyboards, OrderKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
-from utils.meida import get_media_group_cloth, get_media_group_shoes
-from utils.orders import calculate_rub_price
-
-from .messages import (
+from src.config import get_media_files, settings
+from src.create_bot import bot
+from src.db.dals import OrderDAL, UserDAL
+from src.db.models import Order, OrderTypeItem
+from src.fsms import FSMOrder
+from src.handlers.messages import (
     MAIN_MENU,
     NOT_DIGIT_ERROR,
     SEND_ADDRES,
@@ -24,6 +20,11 @@ from .messages import (
     get_new_order_for_admin,
     get_order,
 )
+from src.keyboards import ClientKeyboards, OrderKeyboards
+from src.utils.meida import get_media_group_cloth, get_media_group_shoes
+from src.utils.orders import calculate_rub_price
+
+MEDIA_FILES = get_media_files()
 
 order_roter = Router(name="order_handler")
 
@@ -184,5 +185,6 @@ async def confrim(
     )
 
     await bot.send_message(
-        chat_id=ADMIN_GROUP_ID, text=get_new_order_for_admin(created_order, username)
+        chat_id=settings.ADMIN_GROUP_ID,
+        text=get_new_order_for_admin(created_order, username),
     )

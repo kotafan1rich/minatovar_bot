@@ -5,8 +5,8 @@ from typing import Any, Callable
 
 from redis.asyncio import Redis
 
-from cache.serialization import AbstractSerializer, PickleSerializer
-from db.connection import redis_client
+from src.cache.serialization import AbstractSerializer, PickleSerializer
+from src.db.connection import redis_client
 
 DEFAULT_TTL = 30
 

@@ -1,9 +1,7 @@
-# Строим образ с зависимостями
-FROM python:3.9-slim AS builder
+FROM python:3.10-bullseye
 
 WORKDIR /app
 
-# Отключаем запись байт-кода, чтобы не засорять контейнер
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -17,31 +15,23 @@ libpq-dev \
 build-essential \
 libxml2-dev \
 libxslt-dev && \
-rm -rf /var/lib/apt/lists/*
+rm -rf /var/lib/apt/lists/* && \
+pip install poetry
 
-
-# Обновляем pip и создаем колеса для зависимостей
-COPY requirements.txt . 
-RUN python3 -m pip install --upgrade pip && \
-pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
-
-# Финальный этап
-FROM python:3.9-bullseye
-
-WORKDIR /app
-
-# Копируем зависимости из builder
-COPY --from=builder /app/wheels /wheels
-COPY --from=builder /app/requirements.txt . 
-
+# Устанавливаем часовой пояс
 ENV TZ=Europe/Moscow
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Устанавливаем зависимости из wheels
-RUN python3 -m pip install --no-cache-dir /wheels/*
+# Копируем файлы зависимостей
+COPY pyproject.toml poetry.lock ./
 
-# Копируем остальные файлы
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --only main
+
 COPY . .
+
+ENV PYTHONPATH=/app
 
 # Даем права на выполнение скриптов
 RUN chmod a+x docker/*.sh
+

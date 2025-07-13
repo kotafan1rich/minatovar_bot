@@ -1,6 +1,6 @@
 from typing import List
 
-from db.models import Order, Promos
+from src.db.models import Order, Promos
 
 HELP = "Если у вас есть вопросы по доставке, ценообразованию или качеству товара, то \
 можете написать нашему администратору\n\nКанал: \

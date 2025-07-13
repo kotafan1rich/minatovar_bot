@@ -1,30 +1,22 @@
-from contextlib import asynccontextmanager
-import logging
 import asyncio
+import logging
+from contextlib import asynccontextmanager
+
+import uvicorn
 from aiogram.types import BotCommand
 from aiogram.types.update import Update
-from fastapi import Depends, FastAPI, HTTPException, Header, Request
-from fastapi.templating import Jinja2Templates
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-import uvicorn
-from create_bot import bot, dp
-from db.dals import SettingsDAL
-from handlers import admin_router, client_router, order_roter, error_router
-from db.session import async_session
-from middlewares.middleware import (
+from fastapi.templating import Jinja2Templates
+from src.config import settings
+from src.create_bot import bot, dp
+from src.db.dals import SettingsDAL
+from src.db.session import async_session
+from src.handlers import admin_router, client_router, error_router, order_roter
+from src.middlewares.middleware import (
+    CallbackDataMiddleware,
     DBSessionMiddleware,
     StartMiddleware,
-    CallbackDataMiddleware,
-)
-from config import (
-    BASE_URL,
-    HOST,
-    PORT,
-    STATIC_FILES,
-    TEMPLATE_DIR,
-    WEBHOOK_PATH,
-    DEBUG,
-    SECRET_KEY,
 )
 
 
@@ -56,13 +48,14 @@ async def on_startapp():
 async def lifespan(app: FastAPI):
     await on_startapp()
 
-    await bot.set_webhook(
-        url=f"{BASE_URL}{WEBHOOK_PATH}",
-        secret_token=SECRET_KEY,
-        allowed_updates=dp.resolve_used_update_types(),
-        drop_pending_updates=True,
-    )
-    logging.info(f"Webhook set to {BASE_URL}{WEBHOOK_PATH}")
+    if settings.DEBUG:
+        await bot.set_webhook(
+            url=f"{settings.BASE_URL}{settings.WEBHOOK_PATH}",
+            secret_token=settings.SECRET_KEY,
+            allowed_updates=dp.resolve_used_update_types(),
+            drop_pending_updates=True,
+        )
+        logging.info(f"Webhook set to {settings.BASE_URL}{settings.WEBHOOK_PATH}")
     yield
 
     await bot.delete_webhook()
@@ -70,19 +63,19 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="MinatovarAPI", lifespan=lifespan)
-app.mount("/static", StaticFiles(directory=STATIC_FILES), name="static")
-templates = Jinja2Templates(directory=TEMPLATE_DIR)
+app.mount("/static", StaticFiles(directory=settings.STATIC_FILES), name="static")
+templates = Jinja2Templates(directory=settings.TEMPLATE_DIR)
 
 
 async def verify_webhook_token(
     x_telegram_token: str = Header(..., alias="X-Telegram-Bot-Api-Secret-Token"),
 ):
-    if x_telegram_token != SECRET_KEY:
+    if x_telegram_token != settings.SECRET_KEY:
         raise HTTPException(status_code=401, detail="Invalid token")
     return True
 
 
-@app.post(f"{WEBHOOK_PATH}", include_in_schema=False)
+@app.post(f"{settings.WEBHOOK_PATH}", include_in_schema=False)
 async def webhook(
     request: Request, is_valid_token: bool = Depends(verify_webhook_token)
 ) -> None:
@@ -102,7 +95,7 @@ async def polling():
 
 
 if __name__ == "__main__":
-    if DEBUG:
+    if settings.DEBUG:
         asyncio.run(polling())
     else:
-        uvicorn.run(app, host=HOST, port=PORT)
+        uvicorn.run(app, host=settings.HOST, port=settings.PORT)

@@ -1,6 +1,5 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
-from .common import BaseKeyboards
+from src.keyboards.common import BaseKeyboards
 
 
 class ClientKeyboards(BaseKeyboards):

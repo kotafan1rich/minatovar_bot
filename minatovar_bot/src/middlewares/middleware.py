@@ -1,11 +1,11 @@
-from db.session import async_session
-from typing import Any, Callable, Dict, Awaitable
-from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject, Message, CallbackQuery
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Any, Awaitable, Callable, Dict
 
-from db.dals import ReferralDAL, UserDAL
-from utils.referral import pars_arg
+from aiogram import BaseMiddleware
+from aiogram.types import CallbackQuery, Message, TelegramObject
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.db.dals import ReferralDAL, UserDAL
+from src.db.session import async_session
+from src.utils.referral import pars_arg
 
 
 class DBSessionMiddleware(BaseMiddleware):

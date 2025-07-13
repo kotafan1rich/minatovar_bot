@@ -3,7 +3,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
 )
 
-from .common import BaseKeyboards
+from src.keyboards.common import BaseKeyboards
 
 
 class OrderKeyboards(BaseKeyboards):

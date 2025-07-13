@@ -81,10 +81,9 @@ services:
     networks:
       - mina_net
     environment:
-    - CONTAINER_NAME=postgres
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=2007Fj2007
-    - POSTGRES_DB=min_db
+      - MAX_BACKUPS=2
+    env_file:
+      - .env-non-dev
 
 networks:
   mina_net:

@@ -3,14 +3,14 @@ from typing import Optional
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from create_bot import bot
-from db.dals import PromosDAL, ReferralDAL, SettingsDAL
-from db.models import OrderTypeItem
-from fsms import FSMGetPrice
-from keyboards import ClientKeyboards
 from sqlalchemy.ext.asyncio import AsyncSession
-from utils.meida import get_media_group_cloth, get_media_group_shoes
-from utils.orders import calculate_rub_price, get_active_referrals
+from src.create_bot import bot
+from src.db.dals import PromosDAL, ReferralDAL, SettingsDAL
+from src.db.models import OrderTypeItem
+from src.fsms import FSMGetPrice
+from src.keyboards import ClientKeyboards
+from src.utils.meida import get_media_group_cloth, get_media_group_shoes
+from src.utils.orders import calculate_rub_price, get_active_referrals
 
 from .messages import (
     BOT_IS_UNVAILABLE,

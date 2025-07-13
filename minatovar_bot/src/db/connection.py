@@ -1,14 +1,11 @@
-from redis.asyncio import Redis
-from config import REDIS_HOST, REDIS_DB, REDIS_PORT, REDIS_PASSWORD, REDIS_USER
+from src.config import settings
 
-REDIS_URL = (
-    f"redis://{REDIS_USER}:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
-)
+from redis.asyncio import Redis
 
 redis_client = Redis(
-    host=REDIS_HOST,
-    password=REDIS_PASSWORD,
-    port=REDIS_PORT,
-    db=REDIS_DB,
-    username=REDIS_USER,
+    host=settings.REDIS_HOST,
+    password=settings.REDIS_PASSWORD,
+    port=settings.REDIS_PORT,
+    db=settings.REDIS_DB,
+    username=settings.REDIS_USER,
 )

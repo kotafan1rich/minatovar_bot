@@ -1,7 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from db.models import OrderStatus
-
-from .common import BaseKeyboards
+from src.db.models import OrderStatus
+from src.keyboards.common import BaseKeyboards
 
 
 class AdminKeyboards(BaseKeyboards):

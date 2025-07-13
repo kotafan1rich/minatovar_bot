@@ -1,7 +1,8 @@
 from aiogram.types import FSInputFile, InputMediaPhoto
-from config import MEDIA_FILES
-from handlers.messages import SEND_PRICE
+from src.config import get_media_files
+from src.handlers.messages import SEND_PRICE
 
+MEDIA_FILES = get_media_files()
 
 def get_media_group_shoes():
     return [

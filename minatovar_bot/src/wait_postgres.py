@@ -3,23 +3,17 @@ import logging
 import asyncpg
 import sys
 
-from config import (
-    POSTGRES_PASSWORD,
-    POSTGRES_NAME,
-    POSTGRES_USER,
-    POSTGRES_HOST,
-    POSTGRES_PORT,
-)
+from src.config import settings
 
 
 async def check_postgres():
     try:
         conn = await asyncpg.connect(
-            user=POSTGRES_USER,
-            password=POSTGRES_PASSWORD,
-            database=POSTGRES_NAME,
-            host=POSTGRES_HOST,
-            port=POSTGRES_PORT,
+            user=settings.POSTGRES_USER,
+            password=settings.POSTGRES_PASSWORD,
+            database=settings.POSTGRES_NAME,
+            host=settings.POSTGRES_HOST,
+            port=settings.POSTGRES_PORT,
         )
         await conn.close()
         logging.info("PostgreSQL is ready!")
