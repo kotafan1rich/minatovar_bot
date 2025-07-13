@@ -7,8 +7,8 @@ ENV TZ=Europe/Moscow
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Копируем скрипты и задачи cron
 COPY create_backup_all.sh /create_backup_all.sh
-COPY create_backup_all.sh /backup_only_data.sh
-COPY create_backup_all.sh /backup_only_schema.sh
+COPY backup_only_data.sh /backup_only_data.sh
+COPY backup_only_schema.sh /backup_only_schema.sh
 COPY backup.cron /etc/crontabs/root
 
 RUN sed -i 's/\r$//' /create_backup_all.sh
