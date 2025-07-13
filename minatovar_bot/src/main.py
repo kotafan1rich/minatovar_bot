@@ -48,13 +48,14 @@ async def on_startapp():
 async def lifespan(app: FastAPI):
     await on_startapp()
 
-    await bot.set_webhook(
-        url=f"{settings.BASE_URL}{settings.WEBHOOK_PATH}",
-        secret_token=settings.SECRET_KEY,
-        allowed_updates=dp.resolve_used_update_types(),
-        drop_pending_updates=True,
-    )
-    logging.info(f"Webhook set to {settings.BASE_URL}{settings.WEBHOOK_PATH}")
+    if not settings.DEBUG:
+        await bot.set_webhook(
+            url=f"{settings.BASE_URL}{settings.WEBHOOK_PATH}",
+            secret_token=settings.SECRET_KEY,
+            allowed_updates=dp.resolve_used_update_types(),
+            drop_pending_updates=True,
+        )
+        logging.info(f"Webhook set to {settings.BASE_URL}{settings.WEBHOOK_PATH}")
     yield
 
     await bot.delete_webhook()
