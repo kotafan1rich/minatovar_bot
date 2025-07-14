@@ -4,6 +4,9 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from src.config import get_alembic_db_url
 from src.db.models import Base
+from src.client.models import *
+from src.admin.models import *
+from src.orders.models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

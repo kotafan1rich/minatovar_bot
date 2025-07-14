@@ -1,6 +1,6 @@
 from aiogram.types import FSInputFile, InputMediaPhoto
 from src.config import get_media_files
-from src.handlers.messages import SEND_PRICE
+from src.messages import SEND_PRICE
 
 MEDIA_FILES = get_media_files()
 

@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     REDIS_PASSWORD: str
     REDIS_USER: str
 
-    STATIC_FILES: str
-    TEMPLATE_DIR: str
+    STATIC_FILES: str = "static"
+    TEMPLATE_DIR: str = "src/templates"
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     SECRET_KEY: str
 
-    ADMIN_GROUP_ID: int
+    ADMIN_GROUP_ID: int = -4745215109
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")

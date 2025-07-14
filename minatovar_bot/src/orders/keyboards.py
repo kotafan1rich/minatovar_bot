@@ -2,7 +2,6 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
-
 from src.keyboards.common import BaseKeyboards
 
 
@@ -25,10 +24,6 @@ class OrderKeyboards(BaseKeyboards):
     def confrim_inline(cls):
         bottons = [[cls.CONFRIM_BOTTON], [cls.BACK_TO_ORDERS_BOTTON]]
         return InlineKeyboardMarkup(inline_keyboard=bottons)
-
-    @classmethod
-    def cancel_inline(cls):
-        return InlineKeyboardMarkup(inline_keyboard=[[cls.CANCEL_BOTTON]])
 
     @classmethod
     def back_to_orders_inline(cls):

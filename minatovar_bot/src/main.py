@@ -8,17 +8,19 @@ from aiogram.types.update import Update
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from src.admin.dal import SettingsDAL
 from src.config import settings
 from src.create_bot import bot, dp
-from src.db.dals import SettingsDAL
 from src.db.session import async_session
-from src.handlers import admin_router, client_router, error_router, order_roter
 from src.middlewares.middleware import (
     CallbackDataMiddleware,
     DBSessionMiddleware,
     StartMiddleware,
 )
-
+from src.client.router import client_router
+from src.admin.router import admin_router
+from src.orders.router import order_roter
+from src.errors.router import error_router
 
 async def on_startapp():
     await bot.delete_webhook()

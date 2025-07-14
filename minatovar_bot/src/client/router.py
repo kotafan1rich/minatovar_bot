@@ -4,15 +4,12 @@ from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.admin.dal import PromosDAL, SettingsDAL
+from src.client.dal import ReferralDAL
+from src.client.keyboards import ClientKeyboards
 from src.create_bot import bot
-from src.db.dals import PromosDAL, ReferralDAL, SettingsDAL
-from src.db.models import OrderTypeItem
 from src.fsms import FSMGetPrice
-from src.keyboards import ClientKeyboards
-from src.utils.meida import get_media_group_cloth, get_media_group_shoes
-from src.utils.orders import calculate_rub_price, get_active_referrals
-
-from .messages import (
+from src.messages import (
     BOT_IS_UNVAILABLE,
     HELP,
     MAIN_MENU,
@@ -29,6 +26,9 @@ from .messages import (
     send_current_rate_mes,
     send_price_mes,
 )
+from src.orders.models import OrderTypeItem
+from src.utils.meida import get_media_group_cloth, get_media_group_shoes
+from src.utils.orders import calculate_rub_price, get_active_referrals
 
 client_router = Router(name="client_router")
 

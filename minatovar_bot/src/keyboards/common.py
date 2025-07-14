@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from src.db.models import OrderTypeItem
+
+from src.orders.models import OrderTypeItem
 
 class BaseKeyboards:
     BACK_BOTTON = InlineKeyboardButton(text="◀️", callback_data="back")

@@ -1,12 +1,12 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.client.dal import UserDAL
+from src.client.keyboards import ClientKeyboards
 from src.config import get_media_files, settings
 from src.create_bot import bot
-from src.db.dals import OrderDAL, UserDAL
-from src.db.models import Order, OrderTypeItem
 from src.fsms import FSMOrder
-from src.handlers.messages import (
+from src.messages import (
     MAIN_MENU,
     NOT_DIGIT_ERROR,
     SEND_ADDRES,
@@ -20,7 +20,9 @@ from src.handlers.messages import (
     get_new_order_for_admin,
     get_order,
 )
-from src.keyboards import ClientKeyboards, OrderKeyboards
+from src.orders.dal import OrderDAL
+from src.orders.keyboards import OrderKeyboards
+from src.orders.models import Order, OrderTypeItem
 from src.utils.meida import get_media_group_cloth, get_media_group_shoes
 from src.utils.orders import calculate_rub_price
 

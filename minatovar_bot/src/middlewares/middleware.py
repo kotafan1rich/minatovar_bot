@@ -3,7 +3,7 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message, TelegramObject
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.db.dals import ReferralDAL, UserDAL
+from src.client.dal import ReferralDAL, UserDAL
 from src.db.session import async_session
 from src.utils.referral import pars_arg
 

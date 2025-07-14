@@ -2,14 +2,14 @@ from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.admin.dal import PromosDAL, SettingsDAL
+from src.admin.keyboards import AdminKeyboards
+from src.client.dal import UserDAL
 from src.config import ADMINS
 from src.create_bot import bot
-from src.db.dals import OrderDAL, PromosDAL, SettingsDAL, UserDAL
-from src.db.models import OrderStatus
 from src.fsms import FSMAdmin
-from src.keyboards import AdminKeyboards
 
-from .messages import (
+from src.messages import (
     BAD_FORMAT_ERROR,
     NO_ORDERS,
     NO_PROMOS,
@@ -22,6 +22,8 @@ from .messages import (
     get_order_for_admin,
     get_promos,
 )
+from src.orders.dal import OrderDAL
+from src.orders.models import OrderStatus
 
 admin_router = Router(name="admin_router")
 
@@ -46,6 +48,7 @@ async def promos_menu(call: types.CallbackQuery):
 async def get_all_promos(call: types.CallbackQuery, db_session: AsyncSession):
     promo_dal = PromosDAL(db_session)
     all_promos = await promo_dal.get_all_promos()
+    await call.answer()
     if all_promos:
         for promo in all_promos:
             await bot.send_message(
@@ -67,6 +70,7 @@ async def get_all_promos(call: types.CallbackQuery, db_session: AsyncSession):
 
 @admin_router.callback_query(F.data == "addpromos")
 async def add_promo_admin(call: types.CallbackQuery, state: FSMContext):
+    await call.answer()
     await bot.send_message(
         call.from_user.id,
         SEND_DESCRIPTION,
