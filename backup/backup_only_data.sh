@@ -6,7 +6,7 @@ DATA_BACKUP_FILE="$BACKUP_DIR/data_backup_$TIMESTAMP.sql"
 
 EXCLUDED_TABLES="alembic_version"
 
-# Формируем параметры исключения
+# Generate exclude parameters
 EXCLUDE_ARGS=""
 for TABLE in $EXCLUDED_TABLES; do
     EXCLUDE_ARGS+=" -T $TABLE"
@@ -19,9 +19,9 @@ pg_dump -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_NAME" -p "$POSTGRE
   --data-only $EXCLUDE_ARGS > "$DATA_BACKUP_FILE"
 
 if [ $? -eq 0 ]; then
-  echo "Бэкап данных успешно сохранен: $DATA_BACKUP_FILE"
+  echo "Data backup successfully saved: $DATA_BACKUP_FILE"
 else
-  echo "Ошибка создания бэкапа данных"
+  echo "Error creating data backup"
   [ -e "$DATA_BACKUP_FILE" ] && rm "$DATA_BACKUP_FILE"
   exit 1
 fi
@@ -31,4 +31,4 @@ find "$BACKUP_DIR" -name "data_backup_*.sql*" -type f | \
     tail -n +$(($MAX_BACKUPS + 1)) | \
     xargs -r rm -f --
 
-echo "Готово! Оставлены последние 2 бэкапа данных."
+echo "Done! Only the last 2 data backups are kept."
