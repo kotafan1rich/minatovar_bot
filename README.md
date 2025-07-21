@@ -29,7 +29,7 @@
   - FastAPI (админ-панель и API)
   - SQLAlchemy 2.0 (ORM)
   - Jinja2 
-  - **Инфраструктура**:
+- **Инфраструктура**:
   - Docker
   - Docker Compose
 - **Дополнительно**:
@@ -49,7 +49,7 @@ cd minatovar
 ```
 
 ### 2. Настройка окружения
-Создайте файл `.env` в корне проекта:
+Создайте файл `.env-non-dev` в корне проекта:
 ```ini
 # Основные настройки
 BOT_TOKEN=your_telegram_bot_token
@@ -70,11 +70,11 @@ REDIS_PASSWORD=...
 REDIS_USER=...
 
 # Дополнительные настройки
-TOKEN=...(Tg-bot)
-HOST=0.0.0.0(fastapi)
-PORT=8080(fastapi)
-BASE_URL=https://a368-57-129-20-226.ngrok-free.app(webhook)
-DEBUG=True(True - polling, False - webhook)
+TOKEN=... #(Tg-bot)
+HOST=0.0.0.0 #(fastapi)
+PORT=8080 #(fastapi)
+BASE_URL=https://a368-57-129-20-226.ngrok-free.app #(webhook)
+DEBUG=True #(True - polling, False - webhook)
 
 ALGORITHM=HS256
 SECRET_KEY=gV64m9aIzFG4qpgVphvQbPQrtAO0nM-7YwwOvu0XPt5KJOjAy4AfgLkqJXYEt
@@ -96,17 +96,17 @@ make up
 ### Основные команды:
 ```bash
 
-"  build       - Собрать Docker контейнеры"
-"  up          - Запустить Docker контейнеры в фоновом режиме"
-"  down        - Остановить и удалить Docker контейнеры"
-"  logs        - Просмотреть логи Docker контейнеров в реальном времени"
-"  clean       - Полное удаление контейнеров, образов и томов (осторожно!)"
-"  backup_all  - Создать полную резервную копию БД (данные + схема)"
-"  backup_data - Создать резервную копию только данных"
-"  backup_schema - Создать резервную копию только схемы БД"
-"  restore     - Восстановить БД из резервной копии"
-"  rebuild     - Пересобрать и перезапустить Docker контейнеры (down → build → up)"
-"  reup        - Быстрый перезапуск контейнеров (down → up)"
+build             Собрать Docker контейнеры
+up                Запустить Docker контейнеры в фоновом режиме
+down              Остановить и удалить Docker контейнеры
+logs              Просмотреть логи Docker контейнеров в реальном времени
+clean             Полное удаление контейнеров, образов и томов (осторожно!)
+backup_all        Создать полную резервную копию БД (данные + схема)
+backup_data       Создать резервную копию только данных
+backup_schema     Создать резервную копию только схемы БД
+restore           Восстановить БД из резервной копии
+rebuild           Пересобрать и перезапустить Docker контейнеры (down → build → up)
+reup              Быстрый перезапуск контейнеров (down → up)
 ```
 
 ### Полный список команд:
