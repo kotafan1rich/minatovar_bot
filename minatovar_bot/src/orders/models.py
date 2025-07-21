@@ -69,12 +69,16 @@ class Order(BaseModel):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(BIGINT, ForeignKey("users.user_id"), nullable=False)
-    status = Column(Enum(OrderStatus), default=OrderStatus.CREATED, nullable=False)
+    status: OrderStatus = Column(
+        Enum(OrderStatus), default=OrderStatus.CREATED, nullable=False
+    )
     article = Column(String(255), nullable=False)
     addres = Column(String(255), nullable=False)
     price_rub = Column(Float, nullable=False, default=0.0)
     price_cny = Column(Integer, nullable=False, default=0)
     size = Column(String(100), nullable=False)
-    type_item = Column(Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False)
+    type_item: OrderStatus = Column(
+        Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False
+    )
 
     user = relationship("User", back_populates="orders")

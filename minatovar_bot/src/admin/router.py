@@ -4,24 +4,12 @@ from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.admin.dal import PromosDAL, SettingsDAL
 from src.admin.keyboards import AdminKeyboards
+from src.admin.messages import MessageAdmin
 from src.client.dal import UserDAL
 from src.config import ADMINS
 from src.create_bot import bot
 from src.fsms import FSMAdmin
 
-from src.messages import (
-    BAD_FORMAT_ERROR,
-    NO_ORDERS,
-    NO_PROMOS,
-    NON_ARGUMENT_ERROR,
-    SEND_COMMAND,
-    SEND_DESCRIPTION,
-    SEND_NEW_VALUE,
-    WHAT_CHANGE_QUSTION,
-    WHATS_NEXT,
-    get_order_for_admin,
-    get_promos,
-)
 from src.orders.dal import OrderDAL
 from src.orders.models import OrderStatus
 
@@ -32,7 +20,7 @@ admin_router = Router(name="admin_router")
 async def admin(message: types.Message):
     await bot.send_message(
         message.from_user.id,
-        SEND_COMMAND,
+        MessageAdmin.SEND_COMMAND,
         reply_markup=AdminKeyboards.admin_menu_inline(),
     )
 
@@ -40,7 +28,7 @@ async def admin(message: types.Message):
 @admin_router.callback_query(F.data == "promosadmin")
 async def promos_menu(call: types.CallbackQuery):
     await call.message.edit_text(
-        text=WHATS_NEXT, reply_markup=AdminKeyboards.admin_promos_menu()
+        text=MessageAdmin.WHATS_NEXT, reply_markup=AdminKeyboards.admin_promos_menu()
     )
 
 
@@ -53,18 +41,18 @@ async def get_all_promos(call: types.CallbackQuery, db_session: AsyncSession):
         for promo in all_promos:
             await bot.send_message(
                 chat_id=call.from_user.id,
-                text=get_promos([promo]),
+                text=MessageAdmin.get_promos([promo]),
                 reply_markup=AdminKeyboards.get_info_promo_inline(promo.id),
             )
         await bot.send_message(
             call.from_user.id,
-            SEND_COMMAND,
+            MessageAdmin.SEND_COMMAND,
             reply_markup=AdminKeyboards.admin_menu_inline(),
         )
     else:
         await bot.send_message(
             call.from_user.id,
-            NO_PROMOS,
+            MessageAdmin.NO_PROMOS,
         )
 
 
@@ -73,7 +61,7 @@ async def add_promo_admin(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
     await bot.send_message(
         call.from_user.id,
-        SEND_DESCRIPTION,
+        MessageAdmin.SEND_DESCRIPTION,
         reply_markup=AdminKeyboards.back_to_admin_menu_inline(),
     )
     await state.set_state(FSMAdmin.promo)
@@ -82,7 +70,7 @@ async def add_promo_admin(call: types.CallbackQuery, state: FSMContext):
 @admin_router.callback_query(F.data == "changesettings")
 async def change_settings_admin(call: types.CallbackQuery):
     await call.message.edit_text(
-        text=WHAT_CHANGE_QUSTION,
+        text=MessageAdmin.WHAT_CHANGE_QUSTION,
         reply_markup=AdminKeyboards.change_settings_admin_inline(),
     )
 
@@ -93,7 +81,7 @@ async def get_description_admin(
 ):
     promo_dal = PromosDAL(db_session)
     new_promo = await promo_dal.add_promo(message.text)
-    await bot.send_message(message.from_user.id, get_promos([new_promo]))
+    await bot.send_message(message.from_user.id, MessageAdmin.get_promos([new_promo]))
     await state.clear()
 
 
@@ -111,7 +99,7 @@ async def back_to_menu_admin(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
     await state.clear()
     await call.message.edit_text(
-        text=SEND_COMMAND, reply_markup=AdminKeyboards.admin_menu_inline()
+        text=MessageAdmin.SEND_COMMAND, reply_markup=AdminKeyboards.admin_menu_inline()
     )
 
 
@@ -136,16 +124,16 @@ async def get_orders(
             username = user.username
             await bot.send_message(
                 chat_id=user_id,
-                text=get_order_for_admin(order, username),
+                text=MessageAdmin.get_order_for_admin(order, username),
                 reply_markup=AdminKeyboards.get_info_order_inline(order.id),
             )
         await bot.send_message(
             call.from_user.id,
-            SEND_COMMAND,
+            MessageAdmin.SEND_COMMAND,
             reply_markup=AdminKeyboards.admin_menu_inline(),
         )
     else:
-        await bot.send_message(user_id, NO_ORDERS)
+        await bot.send_message(user_id, MessageAdmin.NO_ORDERS)
 
 
 @admin_router.callback_query(F.data.startswith("status_"))
@@ -174,7 +162,7 @@ async def change_order_status(
     username = user.username
 
     await call.message.edit_text(
-        text=get_order_for_admin(changed_order, username),
+        text=MessageAdmin.get_order_for_admin(changed_order, username),
         reply_markup=AdminKeyboards.get_info_order_inline(changed_order.id),
     )
 
@@ -217,7 +205,8 @@ async def get_param_to_settings_admin(
         await state.set_state(FSMAdmin.current_rate)
 
     await call.message.edit_text(
-        text=SEND_NEW_VALUE, reply_markup=AdminKeyboards.back_to_admin_menu_inline()
+        text=MessageAdmin.SEND_NEW_VALUE,
+        reply_markup=AdminKeyboards.back_to_admin_menu_inline(),
     )
 
 
@@ -229,9 +218,9 @@ async def change_shoes_price(message: types.Message, db_session: AsyncSession):
         )
         await bot.send_message(message.from_user.id, str(price))
     except IndexError:
-        await bot.send_message(message.from_user.id, NON_ARGUMENT_ERROR)
+        await bot.send_message(message.from_user.id, MessageAdmin.NON_ARGUMENT_ERROR)
     except ValueError:
-        await bot.send_message(message.from_user.id, BAD_FORMAT_ERROR)
+        await bot.send_message(message.from_user.id, MessageAdmin.BAD_FORMAT_ERROR)
 
 
 @admin_router.message(F.from_user.id.in_(ADMINS), FSMAdmin.cloth_price)
@@ -242,9 +231,9 @@ async def change_cloth_price(message: types.Message, db_session: AsyncSession):
         )
         await bot.send_message(message.from_user.id, str(price))
     except IndexError:
-        await bot.send_message(message.from_user.id, NON_ARGUMENT_ERROR)
+        await bot.send_message(message.from_user.id, MessageAdmin.NON_ARGUMENT_ERROR)
     except ValueError:
-        await bot.send_message(message.from_user.id, BAD_FORMAT_ERROR)
+        await bot.send_message(message.from_user.id, MessageAdmin.BAD_FORMAT_ERROR)
 
 
 @admin_router.message(F.from_user.id.in_(ADMINS), FSMAdmin.current_rate)
@@ -255,6 +244,6 @@ async def change_current_rate(message: types.Message, db_session: AsyncSession):
         )
         await bot.send_message(message.from_user.id, str(rate))
     except IndexError:
-        await bot.send_message(message.from_user.id, NON_ARGUMENT_ERROR)
+        await bot.send_message(message.from_user.id, MessageAdmin.NON_ARGUMENT_ERROR)
     except ValueError:
-        await bot.send_message(message.from_user.id, BAD_FORMAT_ERROR)
+        await bot.send_message(message.from_user.id, MessageAdmin.BAD_FORMAT_ERROR)

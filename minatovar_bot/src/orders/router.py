@@ -6,25 +6,12 @@ from src.client.keyboards import ClientKeyboards
 from src.config import get_media_files, settings
 from src.create_bot import bot
 from src.fsms import FSMOrder
-from src.messages import (
-    MAIN_MENU,
-    NOT_DIGIT_ERROR,
-    SEND_ADDRES,
-    SEND_ARTICLE,
-    SEND_SIZE,
-    SET_USERNAME,
-    TYPE_ITEM,
-    USERS_NO_ORDERS,
-    WHATS_NEXT,
-    confrim_order,
-    get_new_order_for_admin,
-    get_order,
-)
 from src.orders.dal import OrderDAL
 from src.orders.keyboards import OrderKeyboards
+from src.orders.messages import MessageOrders
 from src.orders.models import Order, OrderTypeItem
 from src.utils.meida import get_media_group_cloth, get_media_group_shoes
-from src.utils.orders import calculate_rub_price
+from src.orders.utils import calculate_rub_price
 
 MEDIA_FILES = get_media_files()
 
@@ -34,7 +21,7 @@ order_roter = Router(name="order_handler")
 @order_roter.callback_query(F.data.startswith("orders"))
 async def order_menu(call: types.CallbackQuery):
     await call.message.edit_text(
-        text=WHATS_NEXT, reply_markup=OrderKeyboards.order_menu_inline()
+        text=MessageOrders.WHATS_NEXT, reply_markup=OrderKeyboards.order_menu_inline()
     )
 
 
@@ -42,7 +29,7 @@ async def order_menu(call: types.CallbackQuery):
 async def back_to_orders(call: types.CallbackQuery, state: FSMContext):
     await state.clear()
     await call.message.edit_text(
-        text=WHATS_NEXT, reply_markup=OrderKeyboards.order_menu_inline()
+        text=MessageOrders.WHATS_NEXT, reply_markup=OrderKeyboards.order_menu_inline()
     )
 
 
@@ -54,10 +41,11 @@ async def get_my_orders(call: types.CallbackQuery, db_session: AsyncSession):
     if orders:
         await call.answer()
         for order in orders:
-            await bot.send_message(user_id, get_order(order))
+            await bot.send_message(user_id, MessageOrders.get_order(order))
     else:
         await call.message.edit_text(
-            text=USERS_NO_ORDERS, reply_markup=OrderKeyboards.order_menu_inline()
+            text=MessageOrders.USERS_NO_ORDERS,
+            reply_markup=OrderKeyboards.order_menu_inline(),
         )
 
 
@@ -77,14 +65,14 @@ async def create_order(call: types.CallbackQuery, state: FSMContext):
         await bot.send_media_group(user_id, media=media_group)
         await bot.send_message(
             user_id,
-            SEND_ARTICLE,
+            MessageOrders.SEND_ARTICLE,
             reply_markup=OrderKeyboards.back_to_orders_inline(),
         )
         await state.set_state(FSMOrder.article)
     else:
         await bot.send_message(
             user_id,
-            SET_USERNAME,
+            MessageOrders.SET_USERNAME,
             reply_markup=OrderKeyboards.back_to_orders_inline(),
         )
 
@@ -96,7 +84,7 @@ async def get_article(messgae: types.Message, state: FSMContext):
     await state.update_data(article=article)
     await bot.send_message(
         user_id,
-        TYPE_ITEM,
+        MessageOrders.TYPE_ITEM,
         reply_markup=OrderKeyboards.get_type_item_inline(),
     )
     await state.set_state(FSMOrder.type_item)
@@ -108,7 +96,8 @@ async def get_type_item(call: types.CallbackQuery, calback_arg: str, state: FSMC
     await state.set_state(FSMOrder.addres)
     await call.answer()
     await call.message.edit_text(
-        text=SEND_ADDRES, reply_markup=OrderKeyboards.back_to_orders_inline()
+        text=MessageOrders.SEND_ADDRES,
+        reply_markup=OrderKeyboards.back_to_orders_inline(),
     )
 
 
@@ -134,12 +123,12 @@ async def get_prcie(message: types.Message, state: FSMContext):
         await state.update_data(price_cny=price)
         await bot.send_message(
             user_id,
-            SEND_SIZE,
+            MessageOrders.SEND_SIZE,
             reply_markup=OrderKeyboards.back_to_orders_inline(),
         )
         await state.set_state(FSMOrder.size)
     else:
-        await bot.send_message(user_id, NOT_DIGIT_ERROR)
+        await bot.send_message(user_id, MessageOrders.NOT_DIGIT_ERROR)
 
 
 @order_roter.message(FSMOrder.size)
@@ -157,7 +146,7 @@ async def get_size(messgae: types.Message, state: FSMContext, db_session: AsyncS
 
     data["price_rub"] = res_price_rub
     await state.set_data(data)
-    order = confrim_order(Order(**data))
+    order = MessageOrders.confrim_order(Order(**data))
     await bot.send_message(user_id, order, reply_markup=OrderKeyboards.confrim_inline())
     await state.set_state(FSMOrder.confrim)
 
@@ -180,13 +169,15 @@ async def confrim(
     created_order = await order_dal.add_order(user_id=user_id, **data)
 
     await call.answer()
-    await call.message.edit_text(get_order(created_order))
+    await call.message.edit_text(MessageOrders.get_order(created_order))
     await state.clear()
     await bot.send_message(
-        user_id, MAIN_MENU, reply_markup=ClientKeyboards.main_menu_inline_kb()
+        user_id,
+        MessageOrders.MAIN_MENU,
+        reply_markup=ClientKeyboards.main_menu_inline_kb(),
     )
 
     await bot.send_message(
         chat_id=settings.ADMIN_GROUP_ID,
-        text=get_new_order_for_admin(created_order, username),
+        text=MessageOrders.get_new_order_for_admin(created_order, username),
     )
