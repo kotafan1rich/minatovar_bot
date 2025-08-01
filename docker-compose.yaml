@@ -2,7 +2,6 @@ services:
   bot:
     container_name: bot
     build: ./minatovar_bot
-    restart: always
     command: ["/app/docker/bot.sh"]
     depends_on:
       - redis

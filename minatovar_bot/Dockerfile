@@ -26,7 +26,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY pyproject.toml poetry.lock ./
 
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --only main
+&& poetry install --no-interaction --no-ansi --only main
+
+
+COPY .env-non-dev ./
 
 COPY . .
 
