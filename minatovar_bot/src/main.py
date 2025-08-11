@@ -76,7 +76,7 @@ app = FastAPI(title="MinatovarAPI", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=settings.STATIC_FILES), name="static")
 templates = Jinja2Templates(directory=settings.TEMPLATE_DIR)
 
-admin = Admin(engine, title="Example: SQLAlchemy")
+admin = Admin(engine, title="Minatovar Admin")
 
 admin.add_view(SettingsAdmin(Settings))
 admin.add_view(PromoAdmin(Promos))
@@ -117,4 +117,4 @@ if __name__ == "__main__":
     if settings.DEBUG:
         asyncio.run(polling())
     else:
-        uvicorn.run(app, host=settings.HOST, port=settings.PORT)
+        uvicorn.run(app, host=settings.HOST, port=settings.PORT, proxy_headers=True, forwarded_allow_ips="*")
