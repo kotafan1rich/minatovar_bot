@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     ADMIN_GROUP_ID: int = -4745215109
 
     model_config = SettingsConfigDict(
-        env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env-non-dev")
+        env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
     )
 
 
