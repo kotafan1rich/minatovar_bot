@@ -8,19 +8,27 @@ from aiogram.types.update import Update
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from src.admin.admin import PromoAdmin, SettingsAdmin
 from src.admin.dal import SettingsDAL
+from src.admin.models import Promos, Settings
+from src.admin.router import admin_router
+from src.client.admin import UserAdmin
+from src.client.models import User
+from src.client.router import client_router
 from src.config import settings
 from src.create_bot import bot, dp
-from src.db.session import async_session
+from src.db.session import async_session, engine
+from src.errors.router import error_router
 from src.middlewares.middleware import (
     CallbackDataMiddleware,
     DBSessionMiddleware,
     StartMiddleware,
 )
-from src.client.router import client_router
-from src.admin.router import admin_router
+from src.orders.admin import OrderAdmin, ReferralAdmin
+from src.orders.models import Order, Referral
 from src.orders.router import order_roter
-from src.errors.router import error_router
+from starlette_admin.contrib.sqla import Admin
+
 
 async def on_startapp():
     await bot.delete_webhook()
@@ -67,6 +75,15 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="MinatovarAPI", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=settings.STATIC_FILES), name="static")
 templates = Jinja2Templates(directory=settings.TEMPLATE_DIR)
+
+admin = Admin(engine, title="Example: SQLAlchemy")
+
+admin.add_view(SettingsAdmin(Settings))
+admin.add_view(PromoAdmin(Promos))
+admin.add_view(UserAdmin(User))
+admin.add_view(OrderAdmin(Order))
+admin.add_view(ReferralAdmin(Referral))
+admin.mount_to(app)
 
 
 async def verify_webhook_token(

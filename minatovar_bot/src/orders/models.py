@@ -16,21 +16,46 @@ from src.db.models import BaseModel
 
 
 class OrderStatus(enum.Enum):
-    CREATED = "🙋‍♂️ Создан"
-    PAID = "💴 Заказ оплачен"
-    BOUGHT_OUT = "✈️ Выкуплен"
-    AGENT = "👨‍💼 Передан Агенту"
-    CUSTOMS = "🛃 Таможня"
-    MOSCOW_WAREHOUSE = "📦 на складе в Москве"
-    TO_PETERSBURG = "🚚 Едет в Питер"
-    TO_CUSTOMER_CITY = "📨 Едет в город к покупателю"
-    COMPLETED = "🏠 Завершен"
-    CANCELED = "❌ Отменён"
+    CREATED = "CREATED"
+    PAID = "PAID"
+    BOUGHT_OUT = "BOUGHT_OUT"
+    AGENT = "AGENT"
+    CUSTOMS = "CUSTOMS"
+    MOSCOW_WAREHOUSE = "MOSCOW_WAREHOUSE"
+    TO_PETERSBURG = "TO_PETERSBURG"
+    TO_CUSTOMER_CITY = "TO_CUSTOMER_CITY"
+    COMPLETED = "COMPLETED"
+    CANCELED = "CANCELED"
+
+    def display(self) -> str:
+        """Возвращает отображаемое значение с эмодзи"""
+        display_map = {
+            OrderStatus.CREATED: "🙋‍♂️ Создан",
+            OrderStatus.PAID: "💴 Заказ оплачен",
+            OrderStatus.BOUGHT_OUT: "✈️ Выкуплен",
+            OrderStatus.AGENT: "👨‍💼 Передан Агенту",
+            OrderStatus.CUSTOMS: "🛃 Таможня",
+            OrderStatus.MOSCOW_WAREHOUSE: "📦 на складе в Москве",
+            OrderStatus.TO_PETERSBURG: "🚚 Едет в Питер",
+            OrderStatus.TO_CUSTOMER_CITY: "📨 Едет в город к покупателю",
+            OrderStatus.COMPLETED: "🏠 Завершен",
+            OrderStatus.CANCELED: "❌ Отменён"
+        }
+        return display_map[self]
+        
 
 
 class OrderTypeItem(enum.Enum):
-    SHOES = "Обувь"
-    CLOTH = "Одежда"
+    SHOES = "SHOES"
+    CLOTH = "CLOTH"
+    
+    def display(self) -> str:
+        """Возвращает отображаемое значение на русском языке"""
+        display_map = {
+            OrderTypeItem.SHOES: "Обувь",
+            OrderTypeItem.CLOTH: "Одежда"
+        }
+        return display_map[self]
 
 
 class Referral(BaseModel):
@@ -77,7 +102,7 @@ class Order(BaseModel):
     price_rub = Column(Float, nullable=False, default=0.0)
     price_cny = Column(Integer, nullable=False, default=0)
     size = Column(String(100), nullable=False)
-    type_item: OrderStatus = Column(
+    type_item: OrderTypeItem = Column(
         Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False
     )
 

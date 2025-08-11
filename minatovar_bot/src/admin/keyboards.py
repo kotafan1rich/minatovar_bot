@@ -85,8 +85,8 @@ class AdminKeyboards(BaseKeyboards):
         bottons = [
             [
                 InlineKeyboardButton(
-                    text=f"{status.value}",
-                    callback_data=f"chstatus_{status.value}_{order_id}",
+                    text=f"{status.display()}",
+                    callback_data=f"chstatus_{status.display()}_{order_id}",
                 )
             ]
             for status in OrderStatus

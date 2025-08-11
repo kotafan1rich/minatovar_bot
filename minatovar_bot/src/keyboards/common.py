@@ -6,11 +6,11 @@ class BaseKeyboards:
     BACK_BOTTON = InlineKeyboardButton(text="◀️", callback_data="back")
     CLOSE_BOTTON = InlineKeyboardButton(text="❌ Закрыть", callback_data="close")
     GET_CLOTH_BOTTON = InlineKeyboardButton(
-        text=OrderTypeItem.CLOTH.value,
+        text=OrderTypeItem.CLOTH.display(),
         callback_data=f"type_{OrderTypeItem.CLOTH.value}",
     )
     GET_SHOES_BOTTON = InlineKeyboardButton(
-        text=OrderTypeItem.SHOES.value,
+        text=OrderTypeItem.SHOES.display(),
         callback_data=f"type_{OrderTypeItem.SHOES.value}",
     )
 

@@ -21,7 +21,7 @@ class MessageOrders(MessageBase):
 
 <b>Артикул:</b> {order.article}
 <b>Размер:</b> {order.size}
-<b>Тип:</b> {order.type_item}
+<b>Тип:</b> {order.type_item.display()}
 <b>Цена (RUB):</b> {order.price_rub}₽
 <b>Цена (CNY):</b> {order.price_cny}¥
 <b>Адрес:</b> {order.addres}
@@ -33,10 +33,10 @@ class MessageOrders(MessageBase):
 <b>!!!НОВЫЙ ЗАКАЗ!!!</b>
 
 <b>ID заказа:</b> {order.id}
-<b>Статус:</b> {order.status.value}
+<b>Статус:</b> {order.status.display()}
 <b>Артикул:</b> {order.article}
 <b>Размер:</b> {order.size}
-<b>Тип:</b> {order.type_item.value}
+<b>Тип:</b> {order.type_item.display()}
 <b>Цена (RUB):</b> {order.price_rub}₽
 <b>Цена (CNY):</b> {order.price_cny}¥
 <b>Адрес:</b> {order.addres}
@@ -50,10 +50,10 @@ class MessageOrders(MessageBase):
 <b>Детали заказа:</b>
 
 <b>ID заказа:</b> {order.id}
-<b>Статус:</b> {order.status.value}
+<b>Статус:</b> {order.status.display()}
 <b>Артикул:</b> {order.article}
 <b>Размер:</b> {order.size}
-<b>Тип:</b> {order.type_item.value}
+<b>Тип:</b> {order.type_item.display()}
 <b>Цена (RUB):</b> {order.price_rub}₽
 <b>Цена (CNY):</b> {order.price_cny}¥
 <b>Адрес:</b> {order.addres}

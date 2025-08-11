@@ -1176,6 +1176,18 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-multipart"
+version = "0.0.20"
+description = "A streaming multipart parser for Python"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "python_multipart-0.0.20-py3-none-any.whl", hash = "sha256:8a62d3a8335e06589fe01f2a3e178cdcc632f3fbe0d492ad9ee0ec35aab1f104"},
+    {file = "python_multipart-0.0.20.tar.gz", hash = "sha256:8dd0cab45b8e23064ae09147625994d090fa46f5b0d1e13af944c331a7fa9d13"},
+]
+
+[[package]]
 name = "redis"
 version = "6.2.0"
 description = "Python client for Redis database and key-value store"
@@ -1349,6 +1361,30 @@ typing-extensions = {version = ">=4.10.0", markers = "python_version < \"3.13\""
 
 [package.extras]
 full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.18)", "pyyaml"]
+
+[[package]]
+name = "starlette-admin"
+version = "0.15.1"
+description = "Fast, beautiful and extensible administrative interface framework for Starlette/FastApi applications"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "starlette_admin-0.15.1-py3-none-any.whl", hash = "sha256:a832e8a0e8a16c9c3f2012ddf352867ad8e730f21192caa85225798091cba130"},
+    {file = "starlette_admin-0.15.1.tar.gz", hash = "sha256:beccdb8695ecadc9f314e0b5afd2b04e067538e8273d0c3199b671198b5ee43e"},
+]
+
+[package.dependencies]
+jinja2 = ">=3,<4"
+python-multipart = "*"
+starlette = "*"
+
+[package.extras]
+cov = ["coverage[toml] (>=7.0.0,<7.7.0)"]
+dev = ["pre-commit (>=2.20.0,<4.1.0)", "uvicorn (>=0.20.0,<0.33.0)"]
+doc = ["mkdocs (>=1.4.2,<2.0.0)", "mkdocs-material (>=9.0.0,<10.0.0)", "mkdocs-static-i18n (>=1.2.3,<1.3)", "mkdocstrings[python] (>=0.19.0,<0.27.0)"]
+i18n = ["babel (>=2.13.0)"]
+test = ["aiomysql (>=0.1.1,<0.3.0)", "aiosqlite (>=0.17.0,<0.21.0)", "arrow (>=1.2.3,<1.4.0)", "asyncpg (>=0.27.0,<0.31.0)", "backports-zoneinfo ; python_version < \"3.9\"", "beanie (<2.0.0)", "black (==25.1.0)", "colour (>=0.1.5,<0.2.0)", "fasteners (==0.19)", "httpx (>=0.23.3,<0.29.0)", "itsdangerous (>=2.2.0,<2.3.0)", "mongoengine (>=0.25.0,<0.30.0)", "mypy (==1.15.0)", "passlib (>=1.7.4,<1.8.0)", "phonenumbers (>=8.13.3,<8.14.0)", "pillow (>=9.4.0,<11.1.0)", "psycopg2-binary (>=2.9.5,<3.0.0)", "pydantic[email] (>=1.10.2,<2.10.0)", "pymysql[rsa] (>=1.0.2,<1.2.0)", "pytest (>=8.3.0,<8.4.0)", "pytest-asyncio (>=0.24.0,<0.25.0)", "ruff (==0.11.9)", "sqlalchemy-file (>=0.5.0,<0.7.0)", "sqlalchemy-utils (>=0.40.0,<0.42.0)", "sqlmodel (>=0.0.11,<0.1.0)", "tinydb (>=4.7.0,<4.9.0)"]
 
 [[package]]
 name = "tomli"
@@ -1562,4 +1598,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "db2a58c82842535d312bea3bfbf634493aca9756bad64dfd0dc0220b411ed308"
+content-hash = "29fbc5559ad4d785985a2cff08ccaa2acbacc2d1123cf563787d2543512a1b07"

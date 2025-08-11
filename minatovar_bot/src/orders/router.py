@@ -146,6 +146,10 @@ async def get_size(messgae: types.Message, state: FSMContext, db_session: AsyncS
 
     data["price_rub"] = res_price_rub
     await state.set_data(data)
+    if data["type_item"] == OrderTypeItem.SHOES.value:
+        data["type_item"] = OrderTypeItem.SHOES
+    else:
+        data["type_item"] = OrderTypeItem.CLOTH
     order = MessageOrders.confrim_order(Order(**data))
     await bot.send_message(user_id, order, reply_markup=OrderKeyboards.confrim_inline())
     await state.set_state(FSMOrder.confrim)

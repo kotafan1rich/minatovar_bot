@@ -13,7 +13,7 @@ async def calculate_rub_price(
     current_rate: float = await settings_dal.get_param("current_rate")
     deliver_price = (
         await settings_dal.get_param("shoes_price")
-        if type_item == OrderTypeItem.SHOES.value
+        if type_item == OrderTypeItem.SHOES.display()
         else await settings_dal.get_param("cloth_price")
     )
     price_rub = price_cny * current_rate + deliver_price

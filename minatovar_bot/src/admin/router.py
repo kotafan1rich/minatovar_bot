@@ -153,7 +153,7 @@ async def change_order_status(
     order_dal = OrderDAL(db_session)
     user_dal = UserDAL(db_session)
 
-    status_enum = next((s for s in OrderStatus if s.value == status), None)
+    status_enum = next((s for s in OrderStatus if s.display() == status), None)
 
     if status_enum is None:
         raise ValueError(f"Invalid status: {status}")
