@@ -8,10 +8,12 @@ from aiogram.types.update import Update
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from src.admin.admin import PromoAdmin, SettingsAdmin
-from src.admin.dal import SettingsDAL
-from src.admin.models import Promos, Settings
+from src.admin.admin import AdminsAdmin, PromoAdmin, SettingsAdmin
+from src.admin.dal import AdminDAL, SettingsDAL
+from src.admin.models import AdminUser, Promos, Settings
 from src.admin.router import admin_router
+from src.auth.auth import CoustomAuth
+from src.auth.utils import get_hash
 from src.client.admin import UserAdmin
 from src.client.models import User
 from src.client.router import client_router
@@ -27,8 +29,9 @@ from src.middlewares.middleware import (
 from src.orders.admin import OrderAdmin, ReferralAdmin
 from src.orders.models import Order, Referral
 from src.orders.router import order_roter
+from starlette.middleware import Middleware
+from starlette.middleware.sessions import SessionMiddleware
 from starlette_admin.contrib.sqla import Admin
-from starlette_admin.auth import AuthProvider
 
 
 async def on_startapp():
@@ -37,11 +40,16 @@ async def on_startapp():
     await bot.set_my_commands([BotCommand(command="/start", description="Начать")])
 
     params = ("current_rate", "shoes_price", "cloth_price")
-    async with async_session() as session:
-        settings_dal = SettingsDAL(session)
+    async with async_session() as db_session:
+        settings_dal = SettingsDAL(db_session)
         for param in params:
             if not await settings_dal.param_exists(param):
                 await settings_dal.set_param(param, 0.0)
+
+        admin_dal = AdminDAL(db_session=db_session)
+        admins_list = await admin_dal.get_all_admins()
+        if not admins_list:
+            await admin_dal.create_admin(username="root", hashed_password=get_hash("root"))
 
     dp.update.outer_middleware(DBSessionMiddleware())
     admin_router.callback_query.middleware.register(CallbackDataMiddleware())
@@ -77,13 +85,19 @@ app = FastAPI(title="MinatovarAPI", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=settings.STATIC_FILES), name="static")
 templates = Jinja2Templates(directory=settings.TEMPLATE_DIR)
 
-admin = Admin(engine, title="Minatovar Admin")
+admin = Admin(
+    engine,
+    title="Minatovar Admin",
+    auth_provider=CoustomAuth(),
+    middlewares=[Middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)],
+)
 
 admin.add_view(SettingsAdmin(Settings, label="Настройки"))
 admin.add_view(PromoAdmin(Promos, label="Акции"))
 admin.add_view(UserAdmin(User, label="Пользователи"))
 admin.add_view(OrderAdmin(Order, label="Заказы"))
 admin.add_view(ReferralAdmin(Referral, label="Рефералы"))
+admin.add_view(AdminsAdmin(AdminUser, label="Админы"))
 admin.mount_to(app)
 
 
@@ -118,4 +132,10 @@ if __name__ == "__main__":
     if settings.DEBUG:
         asyncio.run(polling())
     else:
-        uvicorn.run(app, host=settings.HOST, port=settings.PORT, proxy_headers=True, forwarded_allow_ips="*")
+        uvicorn.run(
+            app,
+            host=settings.HOST,
+            port=settings.PORT,
+            proxy_headers=True,
+            forwarded_allow_ips="*",
+        )

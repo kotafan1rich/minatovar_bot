@@ -1,5 +1,5 @@
 from sqlalchemy import delete, exists, select, update
-from src.admin.models import Promos, Settings
+from src.admin.models import AdminUser, Promos, Settings
 from src.cache.redis import build_key, cached
 from src.db.dals import BaseDAL
 
@@ -58,3 +58,24 @@ class SettingsDAL(BaseDAL):
             query = select(Settings.value).where(Settings.key == key)
             res = await self.db_session.execute(query)
             return res.scalar_one_or_none()
+
+
+class AdminDAL(BaseDAL):
+    async def get_admin_by_username(self, username: str) -> AdminUser | None:
+        async with self.db_session.begin():
+            query = select(AdminUser).where(AdminUser.username == username)
+            res = await self.db_session.execute(query)
+            return res.scalar_one_or_none()
+    
+    async def get_all_admins(self) -> list[AdminUser]:
+        async with self.db_session.begin():
+            query = select(AdminUser)
+            res = await self.db_session.execute(query)
+            return res.scalars().all()
+    
+    async def create_admin(self, username: str, hashed_password: str) -> AdminUser:
+        async with self.db_session.begin():
+            admin = AdminUser(username=username, hashed_password=hashed_password)
+            self.db_session.add(admin)
+            await self.db_session.commit()
+            return admin

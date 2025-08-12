@@ -15,3 +15,11 @@ class Promos(BaseModel):
 
     id = Column(Integer, primary_key=True)
     descriptions = Column(String(4096), nullable=False)
+
+
+class AdminUser(BaseModel):
+    __tablename__ = "admins"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(255), nullable=False, unique=True)
+    hashed_password = Column(String(255), nullable=False)

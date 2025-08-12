@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     SECRET_KEY: str
 
+    ALGORITHM: str
+
     ADMIN_GROUP_ID: int = -4745215109
 
     model_config = SettingsConfigDict(
