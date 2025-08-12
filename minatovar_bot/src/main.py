@@ -79,11 +79,11 @@ templates = Jinja2Templates(directory=settings.TEMPLATE_DIR)
 
 admin = Admin(engine, title="Minatovar Admin")
 
-admin.add_view(SettingsAdmin(Settings))
-admin.add_view(PromoAdmin(Promos))
-admin.add_view(UserAdmin(User))
-admin.add_view(OrderAdmin(Order))
-admin.add_view(ReferralAdmin(Referral))
+admin.add_view(SettingsAdmin(Settings, label="Настройки"))
+admin.add_view(PromoAdmin(Promos, label="Акции"))
+admin.add_view(UserAdmin(User, label="Пользователи"))
+admin.add_view(OrderAdmin(Order, label="Заказы"))
+admin.add_view(ReferralAdmin(Referral, label="Рефералы"))
 admin.mount_to(app)
 
 
