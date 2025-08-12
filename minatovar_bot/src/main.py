@@ -28,6 +28,7 @@ from src.orders.admin import OrderAdmin, ReferralAdmin
 from src.orders.models import Order, Referral
 from src.orders.router import order_roter
 from starlette_admin.contrib.sqla import Admin
+from starlette_admin.auth import AuthProvider
 
 
 async def on_startapp():
@@ -76,7 +77,7 @@ app = FastAPI(title="MinatovarAPI", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=settings.STATIC_FILES), name="static")
 templates = Jinja2Templates(directory=settings.TEMPLATE_DIR)
 
-admin = Admin(engine, title="Minatovar Admin")
+admin = Admin(engine, title="Minatovar Admin", auth_provider=AuthProvider())
 
 admin.add_view(SettingsAdmin(Settings))
 admin.add_view(PromoAdmin(Promos))
