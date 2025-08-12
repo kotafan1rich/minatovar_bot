@@ -28,6 +28,7 @@ from src.orders.admin import OrderAdmin, ReferralAdmin
 from src.orders.models import Order, Referral
 from src.orders.router import order_roter
 from starlette_admin.contrib.sqla import Admin
+from starlette_admin.auth import AuthProvider
 
 
 async def on_startapp():
@@ -117,4 +118,4 @@ if __name__ == "__main__":
     if settings.DEBUG:
         asyncio.run(polling())
     else:
-        uvicorn.run(app, host=settings.HOST, port=settings.PORT)
+        uvicorn.run(app, host=settings.HOST, port=settings.PORT, proxy_headers=True, forwarded_allow_ips="*")
