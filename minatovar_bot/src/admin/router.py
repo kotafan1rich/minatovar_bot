@@ -18,6 +18,7 @@ admin_router = Router(name="admin_router")
 
 @admin_router.message(Command("admin"), F.from_user.id.in_(ADMINS))
 async def admin(message: types.Message):
+    await bot.send_message(message.from_user.id, MessageAdmin.ADMIN_START)
     await bot.send_message(
         message.from_user.id,
         MessageAdmin.SEND_COMMAND,

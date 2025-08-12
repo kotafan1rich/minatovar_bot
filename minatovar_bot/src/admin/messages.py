@@ -1,6 +1,8 @@
 from src.orders.models import Order
 from src.messages import MessageBase
 
+from src.config import settings
+
 
 class MessageAdmin(MessageBase):
     SEND_DESCRIPTION = "Отправьте описание акции"
@@ -8,6 +10,7 @@ class MessageAdmin(MessageBase):
     WHAT_CHANGE_QUSTION = "Что хотите поменять?"
     BAD_FORMAT_ERROR = "Неправильный формат ввода"
     NON_ARGUMENT_ERROR = "Не введён аргумент"
+    ADMIN_START = f"{settings.BASE_URL}/admin/"
     SEND_COMMAND = "Отпарвьте команду"
     NO_ORDERS = "Нет заказов"
 
