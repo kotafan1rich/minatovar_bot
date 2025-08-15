@@ -3,7 +3,7 @@ from typing import Any, Dict, Union
 import anyio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
-from src.admin.models import Promos, Settings
+from src.admin.models import AdminUser, Promos, Settings
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
 
@@ -39,15 +39,16 @@ class PromoAdmin(ModelView):
 
 
 class AdminsAdmin(ModelView):
+    fields = [AdminUser.id, AdminUser.time_updated, AdminUser.time_created]
     exclude_fields_from_create = [
-        Promos.id,
-        Promos.time_created,
-        Promos.time_updated,
+        AdminUser.id,
+        AdminUser.time_created,
+        AdminUser.time_updated,
     ]
     exclude_fields_from_edit = [
-        Promos.id,
-        Promos.time_created,
-        Promos.time_updated,
+        AdminUser.id,
+        AdminUser.time_created,
+        AdminUser.time_updated,
     ]
 
     async def create(self, request: Request, data: Dict[str, Any]) -> Any:
