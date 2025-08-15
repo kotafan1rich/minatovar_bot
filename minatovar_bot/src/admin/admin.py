@@ -39,7 +39,7 @@ class PromoAdmin(ModelView):
 
 
 class AdminsAdmin(ModelView):
-    fields = [AdminUser.id, AdminUser.time_updated, AdminUser.time_created]
+    fields = [AdminUser.id, AdminUser.username, AdminUser.time_updated, AdminUser.time_created]
     exclude_fields_from_create = [
         AdminUser.id,
         AdminUser.time_created,
