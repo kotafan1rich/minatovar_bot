@@ -1,3 +1,4 @@
+from fastapi import Request
 from sqlalchemy import BIGINT, Column, String
 from sqlalchemy.orm import relationship
 from src.db.models import BaseModel
@@ -21,3 +22,6 @@ class User(BaseModel):
         back_populates="referree",
     )
     orders = relationship("Order", back_populates="user")
+
+    async def __admin_repr__(self, request: Request):
+        return f"{self.username}"
