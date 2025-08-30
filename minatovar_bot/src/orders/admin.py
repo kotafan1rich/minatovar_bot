@@ -1,28 +1,32 @@
-from starlette_admin.contrib.sqla import ModelView
+from src.db.admin import AdminBase
+from src.orders.models import Referral, Order
 
-from src.orders.models import Order, Referral
 
+class OrderAdmin(AdminBase):
+    model = Order
 
-class OrderAdmin(ModelView):
-    exclude_fields_from_create = [
+    fields = [
         Order.id,
+        Order.user_id,
+        Order.status,
+        Order.article,
+        Order.size,
+        Order.addres,
+        Order.price_rub,
+        Order.price_cny,
+        Order.type_item,
         Order.time_created,
         Order.time_updated,
     ]
-    exclude_fields_from_edit = [
-        Order.id,
-        Order.time_created,
-        Order.time_updated,
-    ]
 
-class ReferralAdmin(ModelView):
-    exclude_fields_from_create = [
+
+class ReferralAdmin(AdminBase):
+    model = Referral
+
+    fields = [
         Referral.id,
-        Referral.time_created,
-        Referral.time_updated,
-    ]
-    exclude_fields_from_edit = [
-        Referral.id,
+        Referral.id_from,
+        Referral.id_to,
         Referral.time_created,
         Referral.time_updated,
     ]

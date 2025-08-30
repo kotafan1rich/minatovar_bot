@@ -4,52 +4,32 @@ import anyio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from src.admin.models import AdminUser, Promos, Settings
-from starlette.requests import Request
-from starlette_admin.contrib.sqla import ModelView
-
 from src.auth.utils import get_hash
+from src.db.admin import AdminBase
+from starlette.requests import Request
 
 
-class SettingsAdmin(ModelView):
+class SettingsAdmin(AdminBase):
+    model = Settings
+
     fields = [Settings.key, Settings.value, Settings.time_updated]
-    exclude_fields_from_create = [
-        Settings.id,
-        Settings.time_created,
-        Settings.time_updated,
-    ]
-    exclude_fields_from_edit = [
-        Settings.id,
-        Settings.time_created,
-        Settings.time_updated,
-    ]
 
 
-class PromoAdmin(ModelView):
+class PromoAdmin(AdminBase):
+    model = Promos
+
     fields = [Promos.id, Promos.descriptions, Promos.time_updated]
-    exclude_fields_from_create = [
-        Promos.id,
-        Promos.time_created,
-        Promos.time_updated,
-    ]
-    exclude_fields_from_edit = [
-        Promos.id,
-        Promos.time_created,
-        Promos.time_updated,
-    ]
 
 
-class AdminsAdmin(ModelView):
-    fields = [AdminUser.id, AdminUser.username, AdminUser.time_updated, AdminUser.time_created]
-    exclude_fields_from_create = [
+class AdminsAdmin(AdminBase):
+    model = AdminUser
+    fields = [
         AdminUser.id,
-        AdminUser.time_created,
+        AdminUser.username,
         AdminUser.time_updated,
-    ]
-    exclude_fields_from_edit = [
-        AdminUser.id,
         AdminUser.time_created,
-        AdminUser.time_updated,
     ]
+
 
     async def create(self, request: Request, data: Dict[str, Any]) -> Any:
         try:

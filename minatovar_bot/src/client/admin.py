@@ -1,17 +1,14 @@
-from starlette_admin.contrib.sqla import ModelView
-
 from src.client.models import User
+from src.db.admin import AdminBase
 
 
-class UserAdmin(ModelView):
-    fields = [User.id, User.username, User.user_id, User.time_created, User.time_updated]
-    exclude_fields_from_create = [
+class UserAdmin(AdminBase):
+    model = User
+
+    fields = [
         User.id,
-        User.time_created,
-        User.time_updated,
-    ]
-    exclude_fields_from_edit = [
-        User.id,
+        User.username,
+        User.user_id,
         User.time_created,
         User.time_updated,
     ]
