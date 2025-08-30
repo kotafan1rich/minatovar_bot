@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, MetaData, func
+from sqlalchemy import BIGINT, Column, DateTime, MetaData, func
 from sqlalchemy.orm import declarative_base
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
@@ -17,5 +17,6 @@ Base = declarative_base(
 class BaseModel(Base):
     __abstract__ = True
 
+    id = Column(BIGINT, primary_key=True)
     time_created = Column(DateTime(), server_default=func.now())
     time_updated = Column(DateTime(), server_default=func.now(), onupdate=func.now())

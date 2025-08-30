@@ -7,7 +7,6 @@ from src.db.models import BaseModel
 class User(BaseModel):
     __tablename__ = "users"
 
-    id = Column(BIGINT, primary_key=True, autoincrement=True)
     user_id = Column(BIGINT, unique=True, nullable=False)
     username = Column(String(255), nullable=True)
 

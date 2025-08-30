@@ -1,5 +1,6 @@
 import enum
 
+from fastapi import Request
 from sqlalchemy import (
     BIGINT,
     Column,
@@ -42,6 +43,9 @@ class OrderStatus(enum.Enum):
             OrderStatus.CANCELED: "❌ Отменён"
         }
         return display_map[self]
+    
+    async def __admin_repr__(self, request: Request):
+        return self.display()
         
 
 
@@ -56,12 +60,14 @@ class OrderTypeItem(enum.Enum):
             OrderTypeItem.CLOTH: "Одежда"
         }
         return display_map[self]
+    
+    async def __admin_repr__(self, request: Request):
+        return self.display()
 
 
 class Referral(BaseModel):
     __tablename__ = "referrals"
 
-    id = Column(Integer, primary_key=True)
     id_from = Column(
         BIGINT, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
     )
@@ -92,7 +98,6 @@ class Referral(BaseModel):
 class Order(BaseModel):
     __tablename__ = "orders"
 
-    id = Column(Integer, primary_key=True)
     user_id = Column(BIGINT, ForeignKey("users.user_id"), nullable=False)
     status: OrderStatus = Column(
         Enum(OrderStatus), default=OrderStatus.CREATED, nullable=False
