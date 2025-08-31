@@ -22,6 +22,7 @@ from src.create_bot import bot, dp
 from src.db.session import async_session, engine
 from src.errors.router import error_router
 from src.middlewares.middleware import (
+    AdminMiddleware,
     CallbackDataMiddleware,
     DBSessionMiddleware,
     StartMiddleware,
@@ -52,6 +53,8 @@ async def on_startapp():
             await admin_dal.create_admin(username="root", hashed_password=get_hash("root"))
 
     dp.update.outer_middleware(DBSessionMiddleware())
+    admin_router.callback_query.middleware.register(AdminMiddleware())
+    admin_router.message.middleware.register(AdminMiddleware())
     admin_router.callback_query.middleware.register(CallbackDataMiddleware())
     order_roter.callback_query.middleware.register(CallbackDataMiddleware())
     client_router.message.middleware.register(StartMiddleware())

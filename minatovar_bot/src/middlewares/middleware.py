@@ -69,3 +69,22 @@ class CallbackDataMiddleware(BaseMiddleware):
             data["calback_key"] = callback_data[0]
             data["calback_arg"] = callback_data[1] if len(callback_data) > 1 else ""
         return await handler(event, data)
+
+
+class AdminMiddleware(BaseMiddleware):
+    def __init__(self):
+        super().__init__()
+    
+    async def __call__(
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: Dict[str, Any],
+    ):
+        db_session: AsyncSession = data["db_session"]
+        user_dal = UserDAL(db_session=db_session)
+        user_id = event.from_user.id
+        is_admin = await user_dal.is_admin(user_id=user_id)
+        if is_admin:
+            return await handler(event, data)
+

@@ -1,4 +1,5 @@
 from sqlalchemy import exists, select, update
+from sqlalchemy.orm import joinedload
 from src.cache.redis import build_key, cached
 from src.client.models import User
 from src.db.dals import BaseDAL
@@ -29,13 +30,21 @@ class UserDAL(BaseDAL):
         async with self.db_session.begin():
             query = select(exists().where(User.user_id == user_id))
             res = await self.db_session.execute(query)
-            return res.scalar()
+            return res.scalar_one_or_none()
 
     async def get_user(self, user_id: int) -> User | None:
         async with self.db_session.begin():
             query = select(User).where(User.user_id == user_id)
             res = await self.db_session.execute(query)
             return res.scalar_one_or_none()
+
+    async def is_admin(self, user_id: int) -> bool:
+        query = (
+            select(User).options(joinedload(User.admin)).where(User.user_id == user_id)
+        )
+        res = await self.db_session.execute(query)
+        user = res.scalar_one_or_none()
+        return user is not None and user.admin is not None
 
 
 class ReferralDAL(BaseDAL):

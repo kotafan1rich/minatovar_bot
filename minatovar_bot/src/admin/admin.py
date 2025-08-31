@@ -27,8 +27,17 @@ class AdminsAdmin(AdminBase):
     fields = [
         model.id,
         model.username,
+        model.user,
+        model.hashed_password,
         model.time_updated,
         model.time_created,
+    ]
+
+    exclude_fields_from_edit = [
+        model.id,
+        model.hashed_password,
+        model.time_created,
+        model.time_updated,
     ]
 
     async def create(self, request: Request, data: Dict[str, Any]) -> Any:
@@ -53,7 +62,9 @@ class AdminsAdmin(AdminBase):
 
     async def edit(self, request: Request, pk: Any, data: Dict[str, Any]) -> Any:
         try:
-            data["hashed_password"] = get_hash(data["hashed_password"])
+            password = data.get("hashed_password")
+            if password:
+                data["hashed_password"] = get_hash(password)
             data = await self._arrange_data(request, data, True)
             await self.validate(request, data)
             session: Union[Session, AsyncSession] = request.state.session

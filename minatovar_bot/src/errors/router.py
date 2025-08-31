@@ -13,25 +13,25 @@ error_router = Router(name="error_router")
 @error_router.error()
 async def errors_handler(event: ErrorEvent):
     MAX_MESSAGE_LENGTH = 4000
-    traceback_rormat = traceback.format_exc()
+    traceback_format = traceback.format_exc()
 
-    if len(traceback_rormat) > MAX_MESSAGE_LENGTH:
-        traceback_rormat = (
-            "[Сообщение сокращено]...\n" + traceback_rormat[MAX_MESSAGE_LENGTH:]
+    error_for_logger = (
+        f"⚠️ *Ошибка в боте*\n\n"
+        f"💥 *event*: `{event}`\n\n"
+        f"📝 *Traceback*: ```{traceback_format}```"
+    )
+    logger.error(error_for_logger)  # Логируем ошибку в консоль
+
+    if len(traceback_format) > MAX_MESSAGE_LENGTH:
+        traceback_format = (
+            "[Сообщение сокращено]...\n" + traceback_format[MAX_MESSAGE_LENGTH:]
         )
     # Форматируем текст ошибки
     error_message = (
         f"⚠️ *Ошибка в боте*\n\n"
         f"💥 *event*: `{event.exception}`\n\n"
-        f"📝 *Traceback*: ```{traceback_rormat}```"
+        f"📝 *Traceback*: ```{traceback_format}```"
     )
-
-    error__for_logger = (
-        f"⚠️ *Ошибка в боте*\n\n"
-        f"💥 *event*: `{event}`\n\n"
-        f"📝 *Traceback*: ```{traceback_rormat}```"
-    )
-    logger.error(error__for_logger)  # Логируем ошибку в консоль
 
     # Пытаемся отправить сообщение в Telegram
     try:

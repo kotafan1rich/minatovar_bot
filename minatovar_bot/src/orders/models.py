@@ -111,4 +111,4 @@ class Order(BaseModel):
         Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False
     )
 
-    user = relationship("User", back_populates="orders")
+    user: Mapped["User"] = relationship("User", back_populates="orders")

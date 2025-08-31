@@ -1,6 +1,11 @@
-from sqlalchemy import Float, String
-from sqlalchemy.orm import mapped_column, Mapped
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Float, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.db.models import BaseModel
+
+if TYPE_CHECKING:
+    from src.client.models import User
 
 
 class Settings(BaseModel):
@@ -21,3 +26,8 @@ class AdminUser(BaseModel):
 
     username: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    tg_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=True)
+
+    user: Mapped["User"] = relationship(
+        "User", foreign_keys=[tg_id], back_populates="admin", uselist=False
+    )
