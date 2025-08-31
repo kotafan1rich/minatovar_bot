@@ -1,9 +1,10 @@
 import enum
 
+from typing import TYPE_CHECKING
+
 from fastapi import Request
 from sqlalchemy import (
     BIGINT,
-    Column,
     Enum,
     Float,
     ForeignKey,
@@ -12,8 +13,11 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from src.db.models import BaseModel
+
+if TYPE_CHECKING:
+    from src.client.models import User
 
 
 class OrderStatus(enum.Enum):
@@ -40,27 +44,23 @@ class OrderStatus(enum.Enum):
             OrderStatus.TO_PETERSBURG: "🚚 Едет в Питер",
             OrderStatus.TO_CUSTOMER_CITY: "📨 Едет в город к покупателю",
             OrderStatus.COMPLETED: "🏠 Завершен",
-            OrderStatus.CANCELED: "❌ Отменён"
+            OrderStatus.CANCELED: "❌ Отменён",
         }
         return display_map[self]
-    
+
     async def __admin_repr__(self, request: Request):
         return self.display()
-        
 
 
 class OrderTypeItem(enum.Enum):
     SHOES = "SHOES"
     CLOTH = "CLOTH"
-    
+
     def display(self) -> str:
         """Возвращает отображаемое значение на русском языке"""
-        display_map = {
-            OrderTypeItem.SHOES: "Обувь",
-            OrderTypeItem.CLOTH: "Одежда"
-        }
+        display_map = {OrderTypeItem.SHOES: "Обувь", OrderTypeItem.CLOTH: "Одежда"}
         return display_map[self]
-    
+
     async def __admin_repr__(self, request: Request):
         return self.display()
 
@@ -68,22 +68,22 @@ class OrderTypeItem(enum.Enum):
 class Referral(BaseModel):
     __tablename__ = "referrals"
 
-    id_from = Column(
+    id_from: Mapped[int] = mapped_column(
         BIGINT, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
     )
-    id_to = Column(
+    id_to: Mapped[int] = mapped_column(
         BIGINT,
         ForeignKey("users.user_id", ondelete="CASCADE"),
         nullable=False,
         unique=True,
     )
 
-    referrer = relationship(
+    referrer: Mapped["User"] = relationship(
         "User",
         foreign_keys=[id_from],
         back_populates="referrals_from",
     )
-    referree = relationship(
+    referree: Mapped["User"] = relationship(
         "User",
         foreign_keys=[id_to],
         back_populates="referrals_to",
@@ -98,16 +98,16 @@ class Referral(BaseModel):
 class Order(BaseModel):
     __tablename__ = "orders"
 
-    user_id = Column(BIGINT, ForeignKey("users.user_id"), nullable=False)
-    status: OrderStatus = Column(
+    user_id: Mapped[int] = mapped_column(BIGINT, ForeignKey("users.user_id"), nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(
         Enum(OrderStatus), default=OrderStatus.CREATED, nullable=False
     )
-    article = Column(String(255), nullable=False)
-    addres = Column(String(255), nullable=False)
-    price_rub = Column(Float, nullable=False, default=0.0)
-    price_cny = Column(Integer, nullable=False, default=0)
-    size = Column(String(100), nullable=False)
-    type_item: OrderTypeItem = Column(
+    article: Mapped[str] = mapped_column(String(255), nullable=False)
+    addres: Mapped[str] = mapped_column(String(255), nullable=False)
+    price_rub: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    price_cny: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    size: Mapped[str] = mapped_column(String(100), nullable=False)
+    type_item: Mapped[OrderTypeItem] = mapped_column(
         Enum(OrderTypeItem), default=OrderTypeItem.SHOES, nullable=False
     )
 

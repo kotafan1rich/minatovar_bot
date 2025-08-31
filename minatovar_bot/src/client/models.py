@@ -1,26 +1,31 @@
+from typing import TYPE_CHECKING
+
 from fastapi import Request
-from sqlalchemy import BIGINT, Column, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import BIGINT, String
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from src.db.models import BaseModel
+
+if TYPE_CHECKING:
+    from src.orders.models import Referral, Order
 
 
 class User(BaseModel):
     __tablename__ = "users"
 
-    user_id = Column(BIGINT, unique=True, nullable=False)
-    username = Column(String(255), nullable=True)
+    user_id: Mapped[int] = mapped_column(BIGINT, unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(String(255), nullable=True)
 
-    referrals_from = relationship(
+    referrals_from: Mapped["Referral"] = relationship(
         "Referral",
         foreign_keys="Referral.id_from",
         back_populates="referrer",
     )
-    referrals_to = relationship(
+    referrals_to: Mapped["Referral"] = relationship(
         "Referral",
         foreign_keys="Referral.id_to",
         back_populates="referree",
     )
-    orders = relationship("Order", back_populates="user")
+    orders: Mapped["Order"] = relationship("Order", back_populates="user")
 
     async def __admin_repr__(self, request: Request):
         return f"{self.username}"

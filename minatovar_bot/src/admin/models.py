@@ -1,23 +1,23 @@
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Float, String
+from sqlalchemy.orm import mapped_column, Mapped
 from src.db.models import BaseModel
 
 
 class Settings(BaseModel):
     __tablename__ = "settings"
 
-    Column(Integer, primary_key=True)
-    key = Column(String(255), nullable=False)
-    value = Column(Float, nullable=False)
+    key: Mapped[str] = mapped_column(String(255), nullable=False)
+    value: Mapped[float] = mapped_column(Float, nullable=False)
 
 
 class Promos(BaseModel):
     __tablename__ = "promos"
 
-    descriptions = Column(String(4096), nullable=False)
+    descriptions: Mapped[str] = mapped_column(String(4096), nullable=False)
 
 
 class AdminUser(BaseModel):
     __tablename__ = "admins"
 
-    username = Column(String(255), nullable=False, unique=True)
-    hashed_password = Column(String(255), nullable=False)
+    username: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)

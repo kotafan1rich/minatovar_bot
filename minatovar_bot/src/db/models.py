@@ -1,5 +1,6 @@
-from sqlalchemy import BIGINT, Column, DateTime, MetaData, func
-from sqlalchemy.orm import declarative_base
+from datetime import datetime
+from sqlalchemy import BIGINT, DateTime, MetaData, func
+from sqlalchemy.orm import declarative_base, Mapped, mapped_column
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
     "ix": "%(column_0_label)s_idx",
@@ -17,6 +18,6 @@ Base = declarative_base(
 class BaseModel(Base):
     __abstract__ = True
 
-    id = Column(BIGINT, primary_key=True)
-    time_created = Column(DateTime(), server_default=func.now())
-    time_updated = Column(DateTime(), server_default=func.now(), onupdate=func.now())
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True)
+    time_created: Mapped[datetime] = mapped_column(DateTime(), server_default=func.now())
+    time_updated: Mapped[datetime] = mapped_column(DateTime(), server_default=func.now(), onupdate=func.now())
