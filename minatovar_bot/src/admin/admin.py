@@ -12,24 +12,24 @@ from starlette.requests import Request
 class SettingsAdmin(AdminBase):
     model = Settings
 
-    fields = [Settings.key, Settings.value, Settings.time_updated]
+    fields = [model.key, model.value, model.time_updated]
 
 
 class PromoAdmin(AdminBase):
     model = Promos
 
-    fields = [Promos.id, Promos.descriptions, Promos.time_updated]
+    fields = [model.id, model.descriptions, model.time_updated]
 
 
 class AdminsAdmin(AdminBase):
     model = AdminUser
-    fields = [
-        AdminUser.id,
-        AdminUser.username,
-        AdminUser.time_updated,
-        AdminUser.time_created,
-    ]
 
+    fields = [
+        model.id,
+        model.username,
+        model.time_updated,
+        model.time_created,
+    ]
 
     async def create(self, request: Request, data: Dict[str, Any]) -> Any:
         try:

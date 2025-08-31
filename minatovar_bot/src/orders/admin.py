@@ -6,17 +6,17 @@ class OrderAdmin(AdminBase):
     model = Order
 
     fields = [
-        Order.id,
-        Order.user_id,
-        Order.status,
-        Order.article,
-        Order.size,
-        Order.addres,
-        Order.price_rub,
-        Order.price_cny,
-        Order.type_item,
-        Order.time_created,
-        Order.time_updated,
+        model.id,
+        model.user_id,
+        model.status,
+        model.article,
+        model.size,
+        model.addres,
+        model.price_rub,
+        model.price_cny,
+        model.type_item,
+        model.time_created,
+        model.time_updated,
     ]
 
 
@@ -24,9 +24,9 @@ class ReferralAdmin(AdminBase):
     model = Referral
 
     fields = [
-        Referral.id,
-        Referral.id_from,
-        Referral.id_to,
-        Referral.time_created,
-        Referral.time_updated,
+        model.id,
+        model.id_from,
+        model.id_to,
+        model.time_created,
+        model.time_updated,
     ]

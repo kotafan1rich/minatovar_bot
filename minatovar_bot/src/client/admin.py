@@ -6,9 +6,9 @@ class UserAdmin(AdminBase):
     model = User
 
     fields = [
-        User.id,
-        User.username,
-        User.user_id,
-        User.time_created,
-        User.time_updated,
+        model.id,
+        model.username,
+        model.user_id,
+        model.time_created,
+        model.time_updated,
     ]
