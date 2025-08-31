@@ -39,12 +39,13 @@ class UserDAL(BaseDAL):
             return res.scalar_one_or_none()
 
     async def is_admin(self, user_id: int) -> bool:
-        query = (
-            select(User).options(joinedload(User.admin)).where(User.user_id == user_id)
-        )
-        res = await self.db_session.execute(query)
-        user = res.scalar_one_or_none()
-        return user is not None and user.admin is not None
+        async with self.db_session.begin():
+            query = (
+                select(User).options(joinedload(User.admin)).where(User.user_id == user_id)
+            )
+            res = await self.db_session.execute(query)
+            user = res.scalar_one_or_none()
+            return user is not None and user.admin is not None
 
 
 class ReferralDAL(BaseDAL):
