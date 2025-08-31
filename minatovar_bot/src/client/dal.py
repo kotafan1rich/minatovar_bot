@@ -35,7 +35,7 @@ class UserDAL(BaseDAL):
         async with self.db_session.begin():
             query = select(User).where(User.user_id == user_id)
             res = await self.db_session.execute(query)
-            return res.scalar()
+            return res.scalar_one_or_none()
 
 
 class ReferralDAL(BaseDAL):
